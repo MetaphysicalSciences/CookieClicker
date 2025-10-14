@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Cookie Clicker Scuffed</title>
 <style>
-html, body {margin:0;padding:0;height:100%;font-family:Arial, sans-serif;background:url('IMG_0770.png') no-repeat center center fixed;background-size:cover;overflow:hidden;display:flex;flex-direction:column;align-items:center;}
+html,body{margin:0;padding:0;height:100%;font-family:Arial,sans-serif;background:url('IMG_0770.png') no-repeat center center fixed;background-size:cover;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
 #header{text-align:center;margin-top:1vmin;color:#fff;text-shadow:2px 2px 5px #000;}
 #header h1{font-size:4vmin;margin:0;}
 #header #player-name{font-size:3vmin;margin:0.5vmin 0;cursor:pointer;text-decoration:underline;}
-#cookie-container{flex:1;display:flex;justify-content:center;align-items:center;}
+#cookie-container{flex:1;display:flex;justify-content:center;align-items:center;position:relative;}
 #cookie{max-width:25vmin;max-height:25vmin;width:auto;height:auto;cursor:url('IMG_0775.png'),pointer;transition:transform 0.1s;}
+#golden-cookie{position:absolute;top:10%;left:10%;max-width:15vmin;max-height:15vmin;width:auto;height:auto;cursor:pointer;display:none;z-index:10;}
+#frenzy-text{position:absolute;top:30%;width:100%;text-align:center;font-size:8vmin;color:yellow;text-shadow:4px 4px 10px red;display:none;z-index:11;}
 #stats{color:#fff;text-align:center;font-size:3vmin;text-shadow:2px 2px 5px #000;margin:1vmin 0;}
 #upgrades{display:flex;flex-wrap:wrap;justify-content:center;gap:2vmin;margin-bottom:2vmin;}
 .upgrade{display:flex;flex-direction:column;align-items:center;color:#fff;text-shadow:1px 1px 3px #000;font-size:2vmin;background:rgba(0,0,0,0.3);padding:1vmin;border-radius:1vmin;min-width:22vmin;}
@@ -30,7 +32,11 @@ button:hover{background:rgba(255,255,255,1);}
 <h1>Cookie Clicker Scuffed</h1>
 <div id="player-name">Defult</div>
 </div>
-<div id="cookie-container"><img src="IMG_0771.jpeg" id="cookie"></div>
+<div id="cookie-container">
+<img src="IMG_0771.jpeg" id="cookie">
+<img src="IMG_0778.jpeg" id="golden-cookie">
+<div id="frenzy-text">Cookie Cocaine Frenzy!</div>
+</div>
 <div id="stats">Cookies: <span id="cookies">0</span><br>CPS: <span id="cps">0</span></div>
 <div id="upgrades"></div>
 <div id="buttons">
@@ -52,8 +58,6 @@ button:hover{background:rgba(255,255,255,1);}
 let cookies=0;
 let cps=0;
 let playerName="Defult factory";
-let buyMode=true;
-
 const cookiesEl=document.getElementById('cookies');
 const cpsEl=document.getElementById('cps');
 const upgradesEl=document.getElementById('upgrades');
@@ -62,6 +66,11 @@ const clickSound=document.getElementById('click-sound');
 const playerNameEl=document.getElementById('player-name');
 const namePopup=document.getElementById('name-popup');
 const nameInput=document.getElementById('name-input');
+const goldenCookie=document.getElementById('golden-cookie');
+const frenzyText=document.getElementById('frenzy-text');
+
+let frenzyActive=false;
+let frenzyTimeout;
 
 let upgrades=[
 {name:"Cursor", image:"IMG_0775.png", baseCost:15, baseCPS:0.1, count:0},
@@ -75,13 +84,14 @@ function playClick(){let sound=clickSound.cloneNode();sound.play();}
 
 function updateCPS(){
     cps=upgrades.reduce((sum,u)=>sum+u.count*u.baseCPS,0);
+    if(frenzyActive)cps*=2;
     cpsEl.textContent=cps.toFixed(1);
 }
 
 function updateUI(){
     cookiesEl.textContent=Math.floor(cookies);
     upgradesEl.innerHTML='';
-    upgrades.forEach((u,i)=>{
+    upgrades.forEach(u=>{
         let price=Math.floor(u.baseCost*Math.pow(1.15,u.count));
         let contribution=cps>0?(u.count*u.baseCPS/cps*100).toFixed(1):0;
         const div=document.createElement('div');
@@ -90,26 +100,54 @@ function updateUI(){
         <div><button data-type="buy">Buy</button><button data-type="sell">Sell</button></div>`;
         div.querySelectorAll('button').forEach(b=>{
             b.addEventListener('click',()=>{
-                if(b.dataset.type==="buy"){
-                    if(cookies>=price){cookies-=price;u.count++;updateCPS();updateUI();playClick();}
-                }else{
-                    if(u.count>0){u.count--;cookies+=Math.floor(price/1.15);updateCPS();updateUI();playClick();}
-                }
+                if(b.dataset.type==="buy"){if(cookies>=price){cookies-=price;u.count++;updateCPS();updateUI();upgradeClickEffect();playClick();}}
+                else{if(u.count>0){u.count--;cookies+=Math.floor(price/1.15);updateCPS();updateUI();upgradeClickEffect();playClick();}}
             });
         });
         upgradesEl.appendChild(div);
     });
 }
 
+function upgradeClickEffect(){
+    cookieImg.style.transform='scale(1.15)';
+    setTimeout(()=>cookieImg.style.transform='scale(1)',100);
+}
+
 cookieImg.addEventListener('click',()=>{
-    cookies++;cookiesEl.textContent=Math.floor(cookies);
-    cookieImg.style.transform='scale(1.1)';
+    cookies++;
+    cookiesEl.textContent=Math.floor(cookies);
+    cookieImg.style.transform='scale(1.2)';
     setTimeout(()=>cookieImg.style.transform='scale(1)',100);
     playClick();
 });
 
 function autoClick(){cookies+=cps/10;cookiesEl.textContent=Math.floor(cookies);}
 setInterval(autoClick,100);
+
+function spawnGoldenCookie(){
+    if(Math.random()<0.005&&!frenzyActive){
+        goldenCookie.style.display='block';
+        goldenCookie.style.top=Math.random()*70+'%';
+        goldenCookie.style.left=Math.random()*70+'%';
+        let clickListener=()=>{
+            frenzyActive=true;
+            goldenCookie.style.display='none';
+            frenzyText.style.display='block';
+            updateCPS();
+            clearTimeout(frenzyTimeout);
+            frenzyTimeout=setTimeout(()=>{
+                frenzyActive=false;
+                frenzyText.style.display='none';
+                updateCPS();
+            },5000);
+            goldenCookie.removeEventListener('click',clickListener);
+            playClick();
+        };
+        goldenCookie.addEventListener('click',clickListener);
+        setTimeout(()=>{goldenCookie.style.display='none'; goldenCookie.removeEventListener('click',clickListener);},5000);
+    }
+}
+setInterval(spawnGoldenCookie,1000);
 
 document.getElementById('save').addEventListener('click',()=>{
     const saveData={cookies:Math.floor(cookies),upgrades:upgrades.map(u=>u.count),playerName};
