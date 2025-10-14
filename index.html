@@ -6,134 +6,84 @@
 <title>Cookie Clicker Scuffed</title>
 <style>
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
+    margin:0; padding:0; height:100%; overflow:hidden;
     font-family: Arial, sans-serif;
     background: url('IMG_0770.png') no-repeat center center fixed;
     background-size: cover;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden;
 }
 #header {
-    text-align: center;
-    color: #fff;
+    text-align:center;
+    margin-top:1vmin;
+    color:#fff;
     text-shadow: 2px 2px 5px #000;
-    margin-top: 1vmin;
 }
-#header h1 { font-size: 5vmin; margin:0; }
-#header input {
-    font-size: 3vmin;
-    padding: 0.5vmin;
-    text-align: center;
-    border-radius: 0.5vmin;
-    border:none;
-}
-#stats {
-    color: #fff;
-    font-size: 3vmin;
-    text-align: center;
-    text-shadow: 2px 2px 5px #000;
-    margin: 1vmin 0;
-}
-#cookie-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#cookie {
-    max-width: 25vmin;
-    max-height: 25vmin;
-    cursor: url('IMG_0775.png'), pointer;
-    transition: transform 0.1s;
-}
-#upgrades {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2vmin;
-    margin-bottom: 2vmin;
-}
-.upgrade {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    color: #fff;
-    text-shadow: 1px 1px 3px #000;
-    font-size: 2vmin;
-    background: rgba(0,0,0,0.3);
-    padding: 1vmin;
-    border-radius: 1vmin;
-    min-width: 18vmin;
-}
-.upgrade img {
-    width: 12vmin;
-    height: auto;
-    margin-bottom: 0.5vmin;
-}
-#buttons {
-    display: flex;
-    gap: 2vmin;
-    margin-bottom: 2vmin;
-}
-button {
-    font-size: 2vmin;
-    padding: 1vmin 2vmin;
-    border: none;
-    border-radius: 0.5vmin;
-    cursor: pointer;
-    background-color: rgba(255,255,255,0.8);
-    transition: background 0.2s;
-}
-button:hover {
-    background-color: rgba(255,255,255,1);
-}
+#header h1 { font-size:4vmin; margin:0; }
+#header #player-name { font-size:3vmin; margin:0.5vmin 0; cursor:pointer; text-decoration:underline; }
+#cookie-container { flex:1; display:flex; justify-content:center; align-items:center; }
+#cookie { max-width:25vmin; max-height:25vmin; width:auto; height:auto; cursor:url('IMG_0775.png'), pointer; transition: transform 0.1s; }
+#stats { color:#fff; text-align:center; font-size:3vmin; text-shadow:2px 2px 5px #000; margin:1vmin 0; }
+#upgrades { display:flex; flex-wrap:wrap; justify-content:center; gap:2vmin; margin-bottom:2vmin; }
+.upgrade { display:flex; flex-direction:column; align-items:center; cursor:pointer; color:#fff; text-shadow:1px 1px 3px #000; font-size:2vmin; background:rgba(0,0,0,0.3); padding:1vmin; border-radius:1vmin; min-width:18vmin; }
+.upgrade img { width:12vmin; height:auto; margin-bottom:0.5vmin; }
+#buttons { display:flex; gap:2vmin; justify-content:center; margin-bottom:2vmin; }
+button { font-size:2vmin; padding:1vmin 2vmin; border:none; border-radius:0.5vmin; cursor:pointer; background:rgba(255,255,255,0.8); transition:0.2s; }
+button:hover { background:rgba(255,255,255,1); }
+#name-popup { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; display:none; flex-direction:column; gap:1vmin; }
+#name-popup input { font-size:3vmin; padding:1vmin; border-radius:0.5vmin; border:none; width:40vmin; max-width:90%; text-align:center; }
+#name-popup .buttons { display:flex; gap:2vmin; justify-content:center; }
 </style>
 </head>
 <body>
 <div id="header">
     <h1>Cookie Clicker Scuffed</h1>
-    <input type="text" id="playerName" placeholder="Defult">
+    <div id="player-name">Defult</div>
 </div>
-<div id="stats">
-    Cookies: <span id="cookies">0</span><br>
-    CPS: <span id="cps">0</span>
-</div>
-<div id="cookie-container">
-    <img src="IMG_0771.jpeg" id="cookie">
-</div>
+<div id="cookie-container"><img src="IMG_0771.jpeg" id="cookie"></div>
+<div id="stats">Cookies: <span id="cookies">0</span><br>CPS: <span id="cps">0</span></div>
 <div id="upgrades"></div>
 <div id="buttons">
     <button id="save">Save</button>
     <button id="load">Load</button>
 </div>
-<audio id="clickSound" src="computer-mouse-click-352734.mp3"></audio>
+
+<div id="name-popup">
+    <input type="text" id="name-input" placeholder="Enter your name">
+    <div class="buttons">
+        <button id="confirm-name">Confirm</button>
+        <button id="cancel-name">Cancel</button>
+    </div>
+</div>
+
+<audio id="click-sound" src="computer-mouse-click-352734.mp3"></audio>
 
 <script>
 let cookies = 0;
 let cps = 0;
-const playerNameInput = document.getElementById('playerName');
+let playerName = "Defult factory";
+const cookiesEl = document.getElementById('cookies');
+const cpsEl = document.getElementById('cps');
+const upgradesEl = document.getElementById('upgrades');
+const cookieImg = document.getElementById('cookie');
+const clickSound = document.getElementById('click-sound');
+const playerNameEl = document.getElementById('player-name');
+const namePopup = document.getElementById('name-popup');
+const nameInput = document.getElementById('name-input');
 
 let upgrades = [
     {name:"Cursor", image:"IMG_0775.png", baseCost:15, baseCPS:0.1, count:0},
     {name:"Grandma", image:"IMG_0772.jpeg", baseCost:100, baseCPS:1, count:0},
     {name:"Farm", image:"IMG_0774.jpeg", baseCost:500, baseCPS:8, count:0},
     {name:"Mine", image:"IMG_0776.jpeg", baseCost:2000, baseCPS:47, count:0},
-    {name:"Factory", image:"IMG_0777.jpeg", baseCost:7000, baseCPS:260, count:0}
+    {name:"Factory", image:"IMG_0777.jpeg", baseCost:10000, baseCPS:260, count:0}
 ];
 
-const cookiesEl = document.getElementById('cookies');
-const cpsEl = document.getElementById('cps');
-const upgradesEl = document.getElementById('upgrades');
-const cookieImg = document.getElementById('cookie');
-const clickSound = document.getElementById('clickSound');
+function playClick(){
+    let sound = clickSound.cloneNode();
+    sound.play();
+}
 
 function updateCPS(){
-    cps = upgrades.reduce((total,u)=>total+u.count*u.baseCPS,0);
+    cps = upgrades.reduce((sum,u)=>sum+u.count*u.baseCPS,0);
     cpsEl.textContent = cps.toFixed(1);
 }
 
@@ -141,16 +91,17 @@ function updateUI(){
     cookiesEl.textContent = Math.floor(cookies);
     upgradesEl.innerHTML = '';
     upgrades.forEach((u,i)=>{
-        const price = Math.floor(u.baseCost * Math.pow(1.15,u.count));
         const div = document.createElement('div');
-        div.className = 'upgrade';
-        div.innerHTML = `<img src="${u.image}"><span>${u.name}<br>Price: ${price} CPS: ${(u.baseCPS).toFixed(1)}</span>`;
+        let price = Math.floor(u.baseCost*Math.pow(1.15,u.count));
+        div.className='upgrade';
+        div.innerHTML = `<img src="${u.image}"><span>${u.name}<br>Price: ${price}<br>CPS: ${u.baseCPS.toFixed(1)}</span>`;
         div.addEventListener('click', ()=>{
-            if(cookies >= price){
+            if(cookies>=price){
                 cookies -= price;
                 u.count++;
                 updateCPS();
                 updateUI();
+                playClick();
             }
         });
         upgradesEl.appendChild(div);
@@ -160,10 +111,9 @@ function updateUI(){
 cookieImg.addEventListener('click', ()=>{
     cookies++;
     cookiesEl.textContent = Math.floor(cookies);
-    cookieImg.style.transform = 'scale(1.1)';
-    clickSound.currentTime = 0;
-    clickSound.play();
+    cookieImg.style.transform='scale(1.1)';
     setTimeout(()=>cookieImg.style.transform='scale(1)',100);
+    playClick();
 });
 
 function autoClick(){
@@ -172,45 +122,57 @@ function autoClick(){
 }
 setInterval(autoClick,100);
 
-function saveGame(){
-    const saveData = {
-        cookies: Math.floor(cookies),
-        upgrades: upgrades.map(u=>u.count),
-        playerName: playerNameInput.value || "Defult"
-    };
-    const blob = new Blob([JSON.stringify(saveData)],{type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `cookieSave.json`;
+document.getElementById('save').addEventListener('click',()=>{
+    const saveData={cookies:Math.floor(cookies),upgrades:upgrades.map(u=>u.count),playerName};
+    const blob=new Blob([JSON.stringify(saveData)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=Math.floor(Math.random()*1e6)+".AmongUsRedSus.json";
     a.click();
-}
+});
 
-function loadGame(file){
-    const reader = new FileReader();
-    reader.onload = e=>{
-        try{
-            const data = JSON.parse(e.target.result);
-            cookies = data.cookies || 0;
-            upgrades.forEach((u,i)=>{u.count=data.upgrades[i]||0});
-            playerNameInput.value = data.playerName || "Defult";
-            updateCPS();
-            updateUI();
-        }catch{
-            alert('Invalid save file.');
-        }
+document.getElementById('load').addEventListener('click',()=>{
+    const input=document.createElement('input');
+    input.type='file';
+    input.accept='.AmongUsRedSus.json';
+    input.onchange=e=>{
+        const file=e.target.files[0];
+        const reader=new FileReader();
+        reader.onload = ev=>{
+            try{
+                const data=JSON.parse(ev.target.result);
+                cookies=data.cookies||0;
+                upgrades.forEach((u,i)=>{u.count=data.upgrades[i]||0});
+                playerName=data.playerName||"Defult factory";
+                playerNameEl.textContent=playerName;
+                updateCPS();
+                updateUI();
+            }catch{
+                alert('Invalid save file.');
+            }
+        };
+        reader.readAsText(file);
     };
-    reader.readAsText(file);
-}
-
-document.getElementById('save').addEventListener('click', saveGame);
-document.getElementById('load').addEventListener('click', ()=>{
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = e=>loadGame(e.target.files[0]);
     input.click();
 });
 
+playerNameEl.addEventListener('click', ()=>{
+    namePopup.style.display='flex';
+    nameInput.value = playerName.replace(" factory","");
+});
+
+document.getElementById('confirm-name').addEventListener('click', ()=>{
+    let name = nameInput.value.trim() || "Defult";
+    playerName = name + " factory";
+    playerNameEl.textContent = playerName;
+    namePopup.style.display='none';
+});
+
+document.getElementById('cancel-name').addEventListener('click', ()=>{
+    namePopup.style.display='none';
+});
+
+updateCPS();
 updateUI();
 </script>
 </body>
