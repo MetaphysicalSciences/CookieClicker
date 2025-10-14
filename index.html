@@ -3,33 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Cookie Clicker Scuffed Deluxe</title>
+<title>Cookie Clicker Scuffed Ultimate</title>
 <style>
-html,body{margin:0;padding:0;height:100%;font-family:Arial,sans-serif;background:url('IMG_0770.png') no-repeat center center fixed;background-size:cover;display:flex;flex-direction:column;overflow:hidden;}
-#header{text-align:center;color:#fff;text-shadow:2px 2px 5px #000;padding:1vmin;}
+html,body{margin:0;padding:0;height:100%;font-family:Arial,sans-serif;background:url('IMG_0770.png') no-repeat center center fixed;background-size:cover;overflow:hidden;display:flex;flex-direction:column;align-items:center;}
+#header{text-align:center;margin-top:1vmin;color:#fff;text-shadow:2px 2px 5px #000;}
 #header h1{font-size:4vmin;margin:0;}
-#header #player-name{font-size:3vmin;margin-top:0.5vmin;cursor:pointer;text-decoration:underline;}
-#main{flex:1;display:flex;overflow:hidden;}
-#cookie-container{flex:1;display:flex;justify-content:center;align-items:center;position:relative;}
-#cookie{max-width:25vmin;max-height:25vmin;width:auto;height:auto;cursor:url('IMG_0775.png'),pointer;transition:transform 0.1s;}
-#golden-cookie{position:absolute;width:15vmin;height:auto;cursor:pointer;display:none;}
-#golden-text{position:absolute;top:40%;width:100%;text-align:center;font-size:6vmin;color:yellow;text-shadow:4px 4px 8px #000;display:none;pointer-events:none;}
-#stats{position:absolute;top:0;left:0;padding:1vmin;color:#fff;text-shadow:2px 2px 5px #000;font-size:3vmin;}
-#upgrade-panel{width:22vmin;background:rgba(0,0,0,0.3);overflow-y:auto;display:flex;flex-direction:column;padding:1vmin;gap:1vmin;}
-.upgrade{display:flex;flex-direction:column;align-items:center;color:#fff;text-shadow:1px 1px 3px #000;font-size:2vmin;background:rgba(0,0,0,0.4);padding:1vmin;border-radius:1vmin;min-width:100%;transition:0.2s;opacity:0.7;}
-.upgrade.locked{opacity:0.3;}
-.upgrade img{width:12vmin;height:auto;margin-bottom:0.5vmin;transition:0.1s;}
-#buy-sell-toggle{margin:1vmin;padding:0.5vmin 1vmin;font-size:2vmin;border:none;border-radius:0.5vmin;cursor:pointer;background:rgba(255,255,255,0.8);}
+#header #player-name{font-size:3vmin;margin:0.5vmin 0;cursor:pointer;text-decoration:underline;}
+#main{flex:1;display:flex;width:95vw;max-width:1500px;}
+#cookie-container{flex:3;display:flex;justify-content:center;align-items:center;position:relative;}
+#cookie{max-width:30vmin;max-height:30vmin;width:auto;height:auto;cursor:url('IMG_0775.png'),pointer;transition:transform 0.1s;}
+#golden-cookie{position:absolute;width:15vmin;height:auto;cursor:pointer;display:none;transition:transform 0.2s;}
+#golden-text{position:absolute;top:30%;width:100%;text-align:center;font-size:6vmin;color:yellow;text-shadow:4px 4px 8px #000;display:none;pointer-events:none;}
+#stats{color:#fff;text-align:center;font-size:3vmin;text-shadow:2px 2px 5px #000;margin:1vmin 0;}
+#upgrade-panel{flex:1;display:flex;flex-direction:column;background:rgba(0,0,0,0.3);border-radius:1vmin;overflow-y:auto;max-height:90%;padding:1vmin;gap:1vmin;}
+.upgrade{display:flex;flex-direction:column;align-items:center;color:#fff;text-shadow:1px 1px 3px #000;font-size:2vmin;background:rgba(0,0,0,0.5);padding:1vmin;border-radius:1vmin;min-width:18vmin;transition:0.2s;opacity:0.6;}
+.upgrade.unlocked{opacity:1;}
+.upgrade img{width:12vmin;height:auto;margin-bottom:0.5vmin;}
+#toggle-mode{margin-bottom:1vmin;padding:1vmin 2vmin;font-size:2vmin;border:none;border-radius:0.5vmin;cursor:pointer;background:rgba(255,255,255,0.8);}
+#toggle-mode:hover{background:rgba(255,255,255,1);}
+#buttons{display:flex;gap:2vmin;justify-content:center;margin-top:1vmin;}
+button{font-size:2vmin;padding:1vmin 2vmin;border:none;border-radius:0.5vmin;cursor:pointer;background:rgba(255,255,255,0.8);}
+button:hover{background:rgba(255,255,255,1);}
 #name-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;display:none;flex-direction:column;gap:1vmin;}
 #name-popup input{font-size:3vmin;padding:1vmin;border-radius:0.5vmin;border:none;width:40vmin;max-width:90%;text-align:center;}
 #name-popup .buttons{display:flex;gap:2vmin;justify-content:center;}
-button{font-size:2vmin;padding:1vmin 2vmin;border:none;border-radius:0.5vmin;cursor:pointer;background:rgba(255,255,255,0.8);}
-button:hover{background:rgba(255,255,255,1);}
+.particle{position:absolute;width:2vmin;height:2vmin;background:yellow;border-radius:50%;pointer-events:none;animation:float 0.8s linear;}
+@keyframes float{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-5vmin) rotate(720deg);}}
 </style>
 </head>
 <body>
 <div id="header">
-<h1>Cookie Clicker Scuffed Deluxe</h1>
+<h1>Cookie Clicker Scuffed Ultimate</h1>
 <div id="player-name">Defult</div>
 </div>
 <div id="main">
@@ -37,15 +41,17 @@ button:hover{background:rgba(255,255,255,1);}
 <img src="IMG_0771.jpeg" id="cookie">
 <img src="IMG_0778.jpeg" id="golden-cookie">
 <div id="golden-text">Cookie Cocain Frenzy!</div>
+</div>
+<div id="upgrade-panel">
+<button id="toggle-mode">Mode: Buy</button>
+</div>
+</div>
 <div id="stats">Cookies: <span id="cookies">0</span><br>CPS: <span id="cps">0</span></div>
-</div>
-<div id="upgrade-panel"></div>
-</div>
-<div style="display:flex;justify-content:center;margin:1vmin;">
-<button id="buy-sell-toggle">Mode: Buy</button>
+<div id="buttons">
 <button id="save">Save</button>
 <button id="load">Load</button>
 </div>
+
 <div id="name-popup">
 <input type="text" id="name-input" placeholder="Enter your name">
 <div class="buttons">
@@ -53,31 +59,34 @@ button:hover{background:rgba(255,255,255,1);}
 <button id="cancel-name">Cancel</button>
 </div>
 </div>
+
 <audio id="click-sound" src="computer-mouse-click-352734.mp3"></audio>
+
 <script>
-let cookies=0,cps=0,playerName="Defult factory",buyMode=true,goldenActive=false;
+let cookies=0,cps=0,playerName="Defult factory",goldenActive=false,buyMode=true;
 const cookiesEl=document.getElementById('cookies'),cpsEl=document.getElementById('cps');
-const upgradesEl=document.getElementById('upgrade-panel'),cookieImg=document.getElementById('cookie');
+const upgradePanel=document.getElementById('upgrade-panel'),cookieImg=document.getElementById('cookie');
 const clickSound=document.getElementById('click-sound');
 const playerNameEl=document.getElementById('player-name');
 const namePopup=document.getElementById('name-popup');
 const nameInput=document.getElementById('name-input');
 const goldenCookie=document.getElementById('golden-cookie');
 const goldenText=document.getElementById('golden-text');
-const buySellToggle=document.getElementById('buy-sell-toggle');
 
 let upgrades=[
-{name:"Cursor", image:"IMG_0775.png", baseCost:15, baseCPS:0.1, count:0, unlock:0},
-{name:"Grandma", image:"IMG_0772.jpeg", baseCost:100, baseCPS:1, count:0, unlock:0},
-{name:"Farm", image:"IMG_0774.jpeg", baseCost:500, baseCPS:8, count:0, unlock:0},
-{name:"Mine", image:"IMG_0776.jpeg", baseCost:2000, baseCPS:47, count:0, unlock:0},
-{name:"Factory", image:"IMG_0777.jpeg", baseCost:10000, baseCPS:260, count:0, unlock:0},
-{name:"Bank", image:"IMG_0779.jpeg", baseCost:50000, baseCPS:1400, count:0, unlock:50000},
-{name:"Temple", image:"IMG_0780.jpeg", baseCost:200000, baseCPS:7800, count:0, unlock:200000},
-{name:"Wizard Tower", image:"IMG_0781.jpeg", baseCost:1000000, baseCPS:44000, count:0, unlock:1000000}
+{name:"Cursor", image:"IMG_0775.png", baseCost:15, baseCPS:0.1, count:0,unlock:0},
+{name:"Grandma", image:"IMG_0772.jpeg", baseCost:100, baseCPS:1, count:0,unlock:0},
+{name:"Farm", image:"IMG_0774.jpeg", baseCost:500, baseCPS:8, count:0,unlock:0},
+{name:"Mine", image:"IMG_0776.jpeg", baseCost:2000, baseCPS:47, count:0,unlock:0},
+{name:"Factory", image:"IMG_0777.jpeg", baseCost:10000, baseCPS:260, count:0,unlock:0},
+{name:"Bank", image:"IMG_0779.jpeg", baseCost:50000, baseCPS:1400, count:0,unlock:5000},
+{name:"Temple", image:"IMG_0780.jpeg", baseCost:200000, baseCPS:7800, count:0,unlock:20000},
+{name:"Wizard Tower", image:"IMG_0781.jpeg", baseCost:800000, baseCPS:44000, count:0,unlock:80000}
 ];
 
 function playClick(){let s=clickSound.cloneNode();s.play();}
+
+function createParticle(x,y){const p=document.createElement('div');p.className='particle';p.style.left=x+'px';p.style.top=y+'px';document.body.appendChild(p);setTimeout(()=>p.remove(),800);}
 
 function updateCPS(){
     cps=upgrades.reduce((sum,u)=>sum+u.count*u.baseCPS,0);
@@ -87,36 +96,36 @@ function updateCPS(){
 
 function updateUI(){
     cookiesEl.textContent=Math.floor(cookies);
-    upgradesEl.innerHTML='';
-    upgrades.forEach((u,i)=>{
+    upgradePanel.querySelectorAll('.upgrade').forEach(u=>u.remove());
+    upgrades.forEach(u=>{
+        const div=document.createElement('div');
         let price=Math.floor(u.baseCost*Math.pow(1.15,u.count));
         let contribution=cps>0?(u.count*u.baseCPS/cps*100).toFixed(1):0;
-        const div=document.createElement('div');
-        div.className='upgrade'+(cookies<u.unlock?' locked':'');
+        div.className='upgrade '+(cookies>=u.unlock?'unlocked':'');
         div.innerHTML=`<img src="${u.image}"><span>${u.name}<br>Price: ${price}<br>Owned: ${u.count}<br>CPS: ${u.baseCPS.toFixed(1)}<br>Contribution: ${contribution}%</span>`;
         div.addEventListener('click',()=>{
             if(cookies<u.unlock)return;
-            if(buyMode){if(cookies>=price){cookies-=price;u.count++;updateCPS();updateUI();cookieEffect();playClick();}}
-            else{if(u.count>0){u.count--;cookies+=Math.floor(price/1.15);updateCPS();updateUI();cookieEffect();playClick();}}
+            if(buyMode){
+                if(cookies>=price){cookies-=price;u.count++;updateCPS();updateUI();cookieClickEffect();playClick();createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight);}
+            }else{
+                if(u.count>0){u.count--;cookies+=Math.floor(price/1.15);updateCPS();updateUI();cookieClickEffect();playClick();createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight);}
+            }
         });
-        upgradesEl.appendChild(div);
+        upgradePanel.appendChild(div);
     });
 }
 
-function cookieEffect(){
-    cookieImg.style.transform='scale(1.2)';
-    setTimeout(()=>cookieImg.style.transform='scale(1)',100);
-}
+function cookieClickEffect(){cookieImg.style.transform='scale(1.2)';setTimeout(()=>cookieImg.style.transform='scale(1)',100);}
 
 cookieImg.addEventListener('click',()=>{
-    cookies++;updateUI();cookieEffect();playClick();
+    cookies++;updateUI();cookieClickEffect();playClick();createParticle(Math.random()*window.innerWidth,Math.random()*window.innerHeight);
 });
 
 function autoClick(){cookies+=cps/10;updateUI();}
 setInterval(autoClick,100);
 
 function spawnGolden(){
-    if(Math.random()<0.01&&!goldenActive){
+    if(Math.random()<0.005&&!goldenActive){
         goldenCookie.style.display='block';
         goldenCookie.style.left=Math.random()*70+'vw';
         goldenCookie.style.top=Math.random()*60+'vh';
@@ -125,24 +134,25 @@ function spawnGolden(){
 setInterval(spawnGolden,1000);
 
 goldenCookie.addEventListener('click',()=>{
-    goldenActive=true;goldenCookie.style.display='none';goldenText.style.display='block';updateCPS();
+    goldenActive=true;
+    goldenCookie.style.display='none';
+    goldenText.style.display='block';
+    updateCPS();
     setTimeout(()=>{goldenActive=false;goldenText.style.display='none';updateCPS();},5000);
 });
 
-buySellToggle.addEventListener('click',()=>{
+document.getElementById('toggle-mode').addEventListener('click',()=>{
     buyMode=!buyMode;
-    buySellToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');
+    document.getElementById('toggle-mode').textContent='Mode: '+(buyMode?'Buy':'Sell');
 });
 
 document.getElementById('save').addEventListener('click',()=>{
-    const saveData={cookies:Math.floor(cookies),upgrades:upgrades.map(u=>u.count),playerName,secret:Math.random().toString(36)+Date.now()};
-    const blob=new Blob([JSON.stringify(saveData)],{type:'text/plain'});
+    const saveData={c:Math.floor(cookies),u:upgrades.map(x=>x.count),n:playerName};
+    const blob=new Blob([btoa(JSON.stringify(saveData))],{type:'text/plain'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
     a.download=Math.floor(Math.random()*1e6)+".txt";
-    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
 });
 
 document.getElementById('load').addEventListener('click',()=>{
@@ -154,10 +164,10 @@ document.getElementById('load').addEventListener('click',()=>{
         const reader=new FileReader();
         reader.onload=ev=>{
             try{
-                const data=JSON.parse(ev.target.result);
-                cookies=data.cookies||0;
-                upgrades.forEach((u,i)=>{u.count=data.upgrades[i]||0;});
-                playerName=data.playerName||"Defult factory";
+                const data=JSON.parse(atob(ev.target.result));
+                cookies=data.c||0;
+                upgrades.forEach((u,i)=>u.count=data.u[i]||0);
+                playerName=data.n||"Defult factory";
                 playerNameEl.textContent=playerName;
                 updateCPS();
                 updateUI();
@@ -168,18 +178,8 @@ document.getElementById('load').addEventListener('click',()=>{
     input.click();
 });
 
-playerNameEl.addEventListener('click',()=>{
-    namePopup.style.display='flex';
-    nameInput.value=playerName.replace(" factory","");
-});
-
-document.getElementById('confirm-name').addEventListener('click',()=>{
-    let name=nameInput.value.trim()||"Defult";
-    playerName=name+" factory";
-    playerNameEl.textContent=playerName;
-    namePopup.style.display='none';
-});
-
+playerNameEl.addEventListener('click',()=>{namePopup.style.display='flex';nameInput.value=playerName.replace(" factory","");});
+document.getElementById('confirm-name').addEventListener('click',()=>{let n=nameInput.value.trim()||"Defult";playerName=n+" factory";playerNameEl.textContent=playerName;namePopup.style.display='none';});
 document.getElementById('cancel-name').addEventListener('click',()=>{namePopup.style.display='none';});
 
 updateCPS();
