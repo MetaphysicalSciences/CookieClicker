@@ -1,460 +1,191 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cookie Scuffed Clicker TM</title>
 <style>
-:root{
-  --bg:#0f1720;
-  --card:rgba(255,255,255,0.06);
-  --accent:#ffc857;
-  --muted:rgba(255,255,255,0.7);
-  --glass:rgba(255,255,255,0.03);
-  --radius:16px;
-  --gap:12px;
-  --maxw:1200px;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: url('IMG_0770.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
-*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
-html,body{height:100%;margin:0;background:var(--bg);color:white;-webkit-font-smoothing:antialiased}
-body{
-  background-image:url('IMG_0770.png');
-  background-size:cover;
-  background-position:center;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  min-height:100vh;
-  backdrop-filter:blur(2px);
+#stats {
+    color: #fff;
+    font-size: 3vmin;
+    text-align: center;
+    margin-top: 1vmin;
+    text-shadow: 2px 2px 5px #000;
 }
-.container{
-  width:100%;
-  max-width:var(--maxw);
-  background:linear-gradient(180deg, rgba(6,10,13,0.55), rgba(6,10,13,0.7));
-  border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.6);
-  padding:18px;
-  display:grid;
-  grid-template-columns: 1fr 380px;
-  gap:18px;
-  align-items:start;
+#cookie-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-@media (max-width:1000px){.container{grid-template-columns:1fr 320px;padding:14px}}
-@media (max-width:720px){.container{grid-template-columns:1fr;gap:12px;padding:12px}}
-.header{display:flex;align-items:center;gap:12px}
-.title{font-weight:700;font-size:clamp(18px,2.4vw,28px);letter-spacing:0.6px}
-.subtitle{color:var(--muted);font-size:clamp(12px,1.6vw,14px)}
-.left{
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  padding:18px;border-radius:12px;display:flex;flex-direction:column;gap:14px;min-height:420px;
+#cookie {
+    max-width: 25vmin;
+    max-height: 25vmin;
+    width: auto;
+    height: auto;
+    cursor: url('IMG_0775.png'), pointer;
+    transition: transform 0.1s;
 }
-.cookie-wrap{display:flex;align-items:center;justify-content:center;padding:18px;border-radius:12px;background:var(--glass);position:relative}
-.cookie{
-  width:clamp(140px,30vw,320px);
-  height:auto;
-  user-select:none;
-  touch-action:manipulation;
-  transition:transform 80ms ease;
-  will-change:transform;
+#upgrades {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2vmin;
+    margin-bottom: 2vmin;
 }
-.info-row{display:flex;gap:12px;align-items:center;justify-content:space-between}
-.stat{
-  background:var(--card);
-  padding:10px 12px;border-radius:12px;min-width:0;flex:1;
-  display:flex;flex-direction:column;gap:6px;
+.upgrade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: #fff;
+    text-shadow: 1px 1px 3px #000;
+    font-size: 2vmin;
+    background: rgba(0,0,0,0.3);
+    padding: 1vmin;
+    border-radius: 1vmin;
+    min-width: 18vmin;
 }
-.stat .label{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stat .value{font-weight:700;font-size:18px}
-.controls{display:flex;gap:10px;flex-wrap:wrap}
-.btn{
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
-  cursor:pointer;font-weight:600;font-size:14px;color:white;
-  display:inline-flex;align-items:center;gap:8px;
+.upgrade img {
+    width: 12vmin;
+    height: auto;
+    margin-bottom: 0.5vmin;
 }
-.btn:active{transform:translateY(1px)}
-.small{font-size:13px;padding:8px 10px;border-radius:8px}
-.right{
-  display:flex;flex-direction:column;gap:14px;
-  min-width:260px;
+#buttons {
+    display: flex;
+    gap: 2vmin;
+    margin-bottom: 2vmin;
 }
-.panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px}
-.upgrade{
-  display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:rgba(0,0,0,0.15);
-  border:1px solid rgba(255,255,255,0.03);
+button {
+    font-size: 2vmin;
+    padding: 1vmin 2vmin;
+    border: none;
+    border-radius: 0.5vmin;
+    cursor: pointer;
+    background-color: rgba(255,255,255,0.8);
+    transition: background 0.2s;
 }
-.upgrade img{width:56px;height:56px;object-fit:cover;border-radius:10px;flex-shrink:0}
-.upgrade .meta{flex:1;min-width:0}
-.upgrade .meta .name{font-weight:700;font-size:15px}
-.upgrade .meta .desc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.upgrade .meta .cost{font-weight:800;margin-top:6px}
-.footer-row{display:flex;gap:8px;align-items:center;justify-content:space-between}
-.brand{font-weight:700;color:var(--accent)}
-.hint{font-size:12px;color:var(--muted)}
-.controls input[type=file]{display:none}
-.big-numbers{font-size:clamp(22px,3.6vw,36px);font-weight:800;letter-spacing:0.6px}
-.lock{background:linear-gradient(90deg,#6b7280,#374151);padding:8px;border-radius:10px;color:#fff}
-.center{display:flex;align-items:center;justify-content:center}
-.indicator{font-size:12px;color:var(--muted)}
-.foot-actions{display:flex;gap:8px;flex-wrap:wrap}
-.save-file-name{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.notice{font-size:13px;color:var(--muted)}
+button:hover {
+    background-color: rgba(255,255,255,1);
+}
 </style>
 </head>
 <body>
-<div class="container" role="application" aria-label="Cookie Scuffed Clicker TM">
-  <div class="left">
-    <div class="header">
-      <div>
-        <div class="title">Cookie Scuffed Clicker TM</div>
-        <div class="subtitle">A scuffed take on an old classic — play anywhere</div>
-      </div>
-      <div style="margin-left:auto;text-align:right">
-        <div class="subtitle" id="deviceLabel">Device</div>
-        <div class="indicator" id="versionLabel">v1.0</div>
-      </div>
-    </div>
-    <div class="cookie-wrap" aria-hidden="false">
-      <img src="IMG_0771.jpeg" alt="cookie" id="cookieImg" class="cookie" draggable="false" />
-    </div>
-    <div class="info-row">
-      <div class="stat">
-        <div class="label">Cookies</div>
-        <div class="value big-numbers" id="cookies">0</div>
-      </div>
-      <div class="stat">
-        <div class="label">CPS</div>
-        <div class="value" id="cps">0</div>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px">
-      <div class="controls">
-        <button class="btn small" id="saveBtn">Save</button>
-        <button class="btn small" id="loadBtn">Load</button>
-        <label class="btn small" for="fileInput">Choose Save</label>
-        <input id="fileInput" type="file" accept=".AmongUsRedSus" />
-        <button class="btn small" id="verifyBtn">You can't cheat</button>
-      </div>
-      <div class="controls">
-        <div class="hint">Autosave: <span id="autosaveState">ON</span></div>
-      </div>
-    </div>
-    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap">
-      <div class="notice">Tip: Tap or click cookie to earn. Upgrades increase CPS.</div>
-      <div class="save-file-name" id="lastSaveName">No file saved yet</div>
-    </div>
-  </div>
-
-  <div class="right">
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-weight:800">Upgrades</div>
-        <div class="hint">Purchase to increase CPS</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
-        <div class="upgrade" data-key="grandma">
-          <img src="IMG_0772.jpeg" alt="grandma" />
-          <div class="meta">
-            <div class="name">Grandma</div>
-            <div class="desc">Old and dependable. +1 CPS</div>
-            <div class="cost" id="cost-grandma">Cost: 50</div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-            <div id="count-grandma">0</div>
-            <button class="btn small" data-buy="grandma">Buy</button>
-          </div>
-        </div>
-
-        <div class="upgrade" data-key="farm">
-          <img src="IMG_0774.jpeg" alt="farm" />
-          <div class="meta">
-            <div class="name">Farm</div>
-            <div class="desc">Better cookies. +8 CPS</div>
-            <div class="cost" id="cost-farm">Cost: 500</div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-            <div id="count-farm">0</div>
-            <button class="btn small" data-buy="farm">Buy</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-weight:800">Save / Load</div>
-        <div class="hint">Local backup + downloadable save file</div>
-      </div>
-      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn" id="exportBtn">Download Save File</button>
-          <button class="btn" id="importBtn">Load From File</button>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn" id="toggleAuto">Toggle Autosave</button>
-          <div class="indicator" id="autosaveInfo">Autosave interval: 30s</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel center" style="flex-direction:column;gap:8px">
-      <div style="font-weight:800">Save Integrity</div>
-      <div class="hint">Saves include a checksum to prevent tampering</div>
-      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-        <button class="btn" id="checkFileBtn">Verify Chosen File</button>
-        <button class="btn" id="repairBtn">Repair from local backup</button>
-      </div>
-    </div>
-  </div>
+<div id="stats">
+    Cookies: <span id="cookies">0</span><br>
+    CPS: <span id="cps">0</span>
+</div>
+<div id="cookie-container">
+    <img src="IMG_0771.jpeg" id="cookie">
+</div>
+<div id="upgrades"></div>
+<div id="buttons">
+    <button id="save">Save</button>
+    <button id="load">Load</button>
 </div>
 
 <script>
-let state={
-  cookies:0,
-  cps:0,
-  lastClick:0,
-  upgrades:{grandma:{count:0,cost:50,cps:1},farm:{count:0,cost:500,cps:8}},
-  lastSavedName:null
-}
-const cookieImg=document.getElementById('cookieImg')
-const cookiesEl=document.getElementById('cookies')
-const cpsEl=document.getElementById('cps')
-const autosaveStateEl=document.getElementById('autosaveState')
-const lastSaveNameEl=document.getElementById('lastSaveName')
-const fileInput=document.getElementById('fileInput')
-const AUTOSAVE_INTERVAL=30000
-let autosave=true
-let autosaveTimer=null
-let lastSerialized=''
+let cookies = 0;
+let cps = 0;
+let upgrades = [
+    {name:"Cursor", image:"IMG_0775.png", baseCost:15, baseCPS:0.1, count:0},
+    {name:"Grandma", image:"IMG_0772.jpeg", baseCost:100, baseCPS:1, count:0},
+    {name:"Farm", image:"IMG_0774.jpeg", baseCost:500, baseCPS:8, count:0}
+];
+const cookiesEl = document.getElementById('cookies');
+const cpsEl = document.getElementById('cps');
+const upgradesEl = document.getElementById('upgrades');
+const cookieImg = document.getElementById('cookie');
 
-function format(n){
-  if(n>=1e12) return (n/1e12).toFixed(2)+'T'
-  if(n>=1e9) return (n/1e9).toFixed(2)+'B'
-  if(n>=1e6) return (n/1e6).toFixed(2)+'M'
-  if(n>=1e3) return (n/1e3).toFixed(2)+'k'
-  return Math.round(n).toString()
+function updateCPS(){
+    cps = upgrades.reduce((total,u)=>total+u.count*u.baseCPS,0);
+    cpsEl.textContent = cps.toFixed(1);
 }
 
-function recalcCPS(){
-  let total=0
-  for(let k in state.upgrades){
-    total+=state.upgrades[k].count*state.upgrades[k].cps
-  }
-  state.cps=total
-  cpsEl.textContent=state.cps.toFixed(2)
+function updateUI(){
+    cookiesEl.textContent = Math.floor(cookies);
+    upgradesEl.innerHTML = '';
+    upgrades.forEach((u,i)=>{
+        const div = document.createElement('div');
+        div.className = 'upgrade';
+        div.innerHTML = `<img src="${u.image}"><span>${u.name}<br>Price: ${Math.floor(u.baseCost * Math.pow(1.15,u.count))} CPS: ${(u.baseCPS).toFixed(1)}</span>`;
+        div.addEventListener('click', ()=>{
+            let price = Math.floor(u.baseCost * Math.pow(1.15,u.count));
+            if(cookies >= price){
+                cookies -= price;
+                u.count++;
+                updateCPS();
+                updateUI();
+            }
+        });
+        upgradesEl.appendChild(div);
+    });
 }
 
-function render(){
-  cookiesEl.textContent=format(state.cookies)
-  cpsEl.textContent=state.cps.toFixed(2)
-  for(let k in state.upgrades){
-    const c=document.getElementById('count-'+k)
-    const cost=document.getElementById('cost-'+k)
-    c.textContent=state.upgrades[k].count
-    cost.textContent='Cost: '+format(state.upgrades[k].cost)
-  }
-  if(state.lastSavedName) lastSaveNameEl.textContent=state.lastSavedName
+cookieImg.addEventListener('click', ()=>{
+    cookies++;
+    cookiesEl.textContent = Math.floor(cookies);
+    cookieImg.style.transform = 'scale(1.1)';
+    setTimeout(()=>cookieImg.style.transform='scale(1)',100);
+});
+
+function autoClick(){
+    cookies += cps/10;
+    cookiesEl.textContent = Math.floor(cookies);
+}
+setInterval(autoClick,100);
+
+function saveGame(){
+    const saveData = {
+        cookies: Math.floor(cookies),
+        upgrades: upgrades.map(u=>u.count)
+    };
+    const randomNum = Math.floor(Math.random()*1e6);
+    const blob = new Blob([JSON.stringify(saveData)],{type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${randomNum}.AmongUsRedSus`;
+    a.click();
 }
 
-cookieImg.addEventListener('pointerdown',()=>{
-  const t=Date.now()
-  const delta=(t-state.lastClick)||1
-  state.lastClick=t
-  state.cookies+=1
-  cookieImg.style.transform='scale(0.98)'
-  setTimeout(()=>cookieImg.style.transform='scale(1)',80)
-  recalcCPS()
-  render()
-})
-
-document.querySelectorAll('[data-buy]').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const key=btn.getAttribute('data-buy')
-    const up=state.upgrades[key]
-    if(state.cookies>=up.cost){
-      state.cookies-=up.cost
-      up.count+=1
-      up.cost=Math.ceil(up.cost*1.35)
-      recalcCPS()
-      render()
-      saveLocalBackup()
-    } else {
-      btn.animate([{transform:'translateY(0)'},{transform:'translateY(-6px)'},{transform:'translateY(0)'}],{duration:200})
-    }
-  })
-})
-
-function tick(){
-  state.cookies+=state.cps/10
-  render()
-}
-setInterval(tick,100)
-
-function sha256hex(str){
-  const enc=new TextEncoder().encode(str)
-  return crypto.subtle.digest('SHA-256',enc).then(buf=>{
-    const h=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')
-    return h
-  })
+function loadGame(file){
+    const reader = new FileReader();
+    reader.onload = e=>{
+        try{
+            const data = JSON.parse(e.target.result);
+            cookies = data.cookies || 0;
+            upgrades.forEach((u,i)=>{u.count=data.upgrades[i]||0});
+            updateCPS();
+            updateUI();
+        }catch{
+            alert('Invalid save file.');
+        }
+    };
+    reader.readAsText(file);
 }
 
-function serializeState(){
-  const clone=JSON.parse(JSON.stringify(state))
-  clone._meta={ts:Date.now()}
-  return JSON.stringify(clone)
-}
+document.getElementById('save').addEventListener('click', saveGame);
+document.getElementById('load').addEventListener('click', ()=>{
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.AmongUsRedSus';
+    input.onchange = e=>loadGame(e.target.files[0]);
+    input.click();
+});
 
-async function makeSaveBlob(){
-  const payload=serializeState()
-  const checksum=await sha256hex(payload)
-  const fileobj={payload,checksum}
-  return new Blob([btoa(unescape(encodeURIComponent(JSON.stringify(fileobj))))],{type:'application/octet-stream'})
-}
-
-async function exportSave(){
-  const blob=await makeSaveBlob()
-  const rn=Math.floor(Math.random()*9000000)+1000000
-  const name=rn+'_save.AmongUsRedSus'
-  const url=URL.createObjectURL(blob)
-  const a=document.createElement('a')
-  a.href=url
-  a.download=name
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  URL.revokeObjectURL(url)
-  state.lastSavedName=name
-  saveLocalBackup()
-  render()
-}
-
-async function autosaveRoutine(){
-  if(!autosave) return
-  const serialized=serializeState()
-  if(serialized===lastSerialized) return
-  lastSerialized=serialized
-  const blob=await makeSaveBlob()
-  const rn=Math.floor(Math.random()*9000000)+1000000
-  const name=rn+'_autosave.AmongUsRedSus'
-  const url=URL.createObjectURL(blob)
-  const a=document.createElement('a')
-  a.href=url
-  a.download=name
-  a.style.display='none'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  URL.revokeObjectURL(url)
-  state.lastSavedName=name
-  saveLocalBackup()
-  render()
-}
-
-function startAutosave(){
-  if(autosaveTimer) clearInterval(autosaveTimer)
-  autosaveTimer=setInterval(autosaveRoutine,AUTOSAVE_INTERVAL)
-}
-
-function stopAutosave(){
-  if(autosaveTimer) clearInterval(autosaveTimer); autosaveTimer=null
-}
-
-document.getElementById('saveBtn').addEventListener('click',exportSave)
-document.getElementById('exportBtn').addEventListener('click',exportSave)
-document.getElementById('toggleAuto').addEventListener('click',()=>{
-  autosave=!autosave
-  autosaveStateEl.textContent=autosave?'ON':'OFF'
-  document.getElementById('autosaveInfo').textContent='Autosave interval: 30s'
-  if(autosave) startAutosave() else stopAutosave()
-})
-
-fileInput.addEventListener('change',async(e)=>{
-  const f=e.target.files[0]
-  if(!f) return
-  const text=await f.text()
-  try{
-    const decoded=JSON.parse(decodeURIComponent(escape(atob(text))))
-    const payload=decoded.payload
-    const checksum=decoded.checksum
-    const actual=await sha256hex(payload)
-    if(actual!==checksum) {alert("Save failed: checksum mismatch (you can't cheat)"); return}
-    const parsed=JSON.parse(payload)
-    state=Object.assign(state,parsed)
-    recalcCPS()
-    render()
-    saveLocalBackup()
-    alert('Save loaded successfully')
-  }catch(err){
-    alert('Invalid save file')
-  }
-  fileInput.value=''
-})
-
-document.getElementById('loadBtn').addEventListener('click',()=>fileInput.click())
-document.getElementById('importBtn').addEventListener('click',()=>fileInput.click())
-
-document.getElementById('verifyBtn').addEventListener('click',async()=>{
-  alert('To verify a save file select it via "Choose Save" then click "Verify Chosen File".')
-})
-
-document.getElementById('checkFileBtn').addEventListener('click',async()=>{
-  const fi=fileInput.files[0]
-  if(!fi){alert('Choose a .AmongUsRedSus file first');return}
-  const text=await fi.text()
-  try{
-    const decoded=JSON.parse(decodeURIComponent(escape(atob(text))))
-    const payload=decoded.payload
-    const checksum=decoded.checksum
-    const actual=await sha256hex(payload)
-    if(actual!==checksum) {alert("Verification failed: checksum mismatch (can't cheat)");return}
-    alert('Verification passed: file is intact')
-  }catch(e){alert('Invalid save file')}
-})
-
-function saveLocalBackup(){
-  localStorage.setItem('csc_state_backup',serializeState())
-  localStorage.setItem('csc_state_checksum','none')
-  localStorage.setItem('csc_state_name',state.lastSavedName||'localbackup')
-  localStorage.setItem('csc_ts',Date.now().toString())
-}
-
-document.getElementById('repairBtn').addEventListener('click',()=>{
-  const b=localStorage.getItem('csc_state_backup')
-  if(!b){alert('No local backup found');return}
-  try{
-    const parsed=JSON.parse(b)
-    state=Object.assign(state,parsed)
-    recalcCPS()
-    render()
-    alert('Repaired from local backup')
-  }catch(e){alert('Backup corrupted')}
-})
-
-function tryLoadLocal(){
-  const b=localStorage.getItem('csc_state_backup')
-  if(!b) return
-  try{
-    const parsed=JSON.parse(b)
-    state=Object.assign(state,parsed)
-    recalcCPS()
-    render()
-  }catch(e){}
-}
-
-window.addEventListener('load',()=>{
-  tryLoadLocal()
-  recalcCPS()
-  render()
-  startAutosave()
-  autosaveStateEl.textContent=autosave?'ON':'OFF'
-  const ua=navigator.userAgent.toLowerCase()
-  let dev='Desktop'
-  if(/ipad|tablet/.test(ua)) dev='iPad/Tablet'
-  else if(/mobi|android|iphone/.test(ua)) dev='Phone'
-  document.getElementById('deviceLabel').textContent=dev
-})
-
+updateUI();
 </script>
 </body>
 </html>
