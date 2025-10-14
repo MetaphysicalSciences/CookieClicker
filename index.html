@@ -3,21 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Cookie Clicker Scuffed</title>
+<title>Cookie Clicker Scuffed Deluxe</title>
 <style>
-html,body{margin:0;padding:0;height:100%;font-family:Arial,sans-serif;background:url('IMG_0770.png') no-repeat center center fixed;background-size:cover;display:flex;flex-direction:column;align-items:center;overflow:hidden;}
+html, body {margin:0;padding:0;height:100%;font-family:Arial,sans-serif;background:url('IMG_0770.png') no-repeat center center fixed;background-size:cover;overflow:hidden;display:flex;flex-direction:column;align-items:center;}
 #header{text-align:center;margin-top:1vmin;color:#fff;text-shadow:2px 2px 5px #000;}
 #header h1{font-size:4vmin;margin:0;}
 #header #player-name{font-size:3vmin;margin:0.5vmin 0;cursor:pointer;text-decoration:underline;}
 #cookie-container{flex:1;display:flex;justify-content:center;align-items:center;position:relative;}
 #cookie{max-width:25vmin;max-height:25vmin;width:auto;height:auto;cursor:url('IMG_0775.png'),pointer;transition:transform 0.1s;}
-#golden-cookie{position:absolute;top:10%;left:10%;max-width:15vmin;max-height:15vmin;width:auto;height:auto;cursor:pointer;display:none;z-index:10;}
-#frenzy-text{position:absolute;top:30%;width:100%;text-align:center;font-size:8vmin;color:yellow;text-shadow:4px 4px 10px red;display:none;z-index:11;}
 #stats{color:#fff;text-align:center;font-size:3vmin;text-shadow:2px 2px 5px #000;margin:1vmin 0;}
 #upgrades{display:flex;flex-wrap:wrap;justify-content:center;gap:2vmin;margin-bottom:2vmin;}
-.upgrade{display:flex;flex-direction:column;align-items:center;color:#fff;text-shadow:1px 1px 3px #000;font-size:2vmin;background:rgba(0,0,0,0.3);padding:1vmin;border-radius:1vmin;min-width:22vmin;}
-.upgrade img{width:12vmin;height:auto;margin-bottom:0.5vmin;}
-.upgrade button{margin:0.5vmin;font-size:2vmin;padding:0.5vmin 1vmin;border:none;border-radius:0.5vmin;cursor:pointer;background:rgba(255,255,255,0.8);}
+.upgrade{display:flex;flex-direction:column;align-items:center;color:#fff;text-shadow:1px 1px 3px #000;font-size:2vmin;background:rgba(0,0,0,0.3);padding:1vmin;border-radius:1vmin;min-width:22vmin;transition:0.2s;}
+.upgrade img{width:12vmin;height:auto;margin-bottom:0.5vmin;transition:0.1s;}
+.upgrade button{margin:0.5vmin;font-size:2vmin;padding:0.5vmin 1vmin;border:none;border-radius:0.5vmin;cursor:pointer;background:rgba(255,255,255,0.8);transition:0.2s;}
 .upgrade button:hover{background:rgba(255,255,255,1);}
 #buttons{display:flex;gap:2vmin;justify-content:center;margin-bottom:2vmin;}
 button{font-size:2vmin;padding:1vmin 2vmin;border:none;border-radius:0.5vmin;cursor:pointer;background:rgba(255,255,255,0.8);}
@@ -25,17 +23,19 @@ button:hover{background:rgba(255,255,255,1);}
 #name-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;display:none;flex-direction:column;gap:1vmin;}
 #name-popup input{font-size:3vmin;padding:1vmin;border-radius:0.5vmin;border:none;width:40vmin;max-width:90%;text-align:center;}
 #name-popup .buttons{display:flex;gap:2vmin;justify-content:center;}
+#golden-text{position:absolute;top:40%;width:100%;text-align:center;font-size:6vmin;color:yellow;text-shadow:4px 4px 8px #000;display:none;pointer-events:none;}
+#golden-cookie{position:absolute;width:15vmin;height:auto;cursor:pointer;display:none;}
 </style>
 </head>
 <body>
 <div id="header">
-<h1>Cookie Clicker Scuffed</h1>
+<h1>Cookie Clicker Scuffed Deluxe</h1>
 <div id="player-name">Defult</div>
 </div>
 <div id="cookie-container">
 <img src="IMG_0771.jpeg" id="cookie">
 <img src="IMG_0778.jpeg" id="golden-cookie">
-<div id="frenzy-text">Cookie Cocaine Frenzy!</div>
+<div id="golden-text">Cookie Cocain Frenzy!</div>
 </div>
 <div id="stats">Cookies: <span id="cookies">0</span><br>CPS: <span id="cps">0</span></div>
 <div id="upgrades"></div>
@@ -55,22 +55,15 @@ button:hover{background:rgba(255,255,255,1);}
 <audio id="click-sound" src="computer-mouse-click-352734.mp3"></audio>
 
 <script>
-let cookies=0;
-let cps=0;
-let playerName="Defult factory";
-const cookiesEl=document.getElementById('cookies');
-const cpsEl=document.getElementById('cps');
-const upgradesEl=document.getElementById('upgrades');
-const cookieImg=document.getElementById('cookie');
+let cookies=0,cps=0,playerName="Defult factory",goldenActive=false;
+const cookiesEl=document.getElementById('cookies'),cpsEl=document.getElementById('cps');
+const upgradesEl=document.getElementById('upgrades'),cookieImg=document.getElementById('cookie');
 const clickSound=document.getElementById('click-sound');
 const playerNameEl=document.getElementById('player-name');
 const namePopup=document.getElementById('name-popup');
 const nameInput=document.getElementById('name-input');
 const goldenCookie=document.getElementById('golden-cookie');
-const frenzyText=document.getElementById('frenzy-text');
-
-let frenzyActive=false;
-let frenzyTimeout;
+const goldenText=document.getElementById('golden-text');
 
 let upgrades=[
 {name:"Cursor", image:"IMG_0775.png", baseCost:15, baseCPS:0.1, count:0},
@@ -80,18 +73,18 @@ let upgrades=[
 {name:"Factory", image:"IMG_0777.jpeg", baseCost:10000, baseCPS:260, count:0}
 ];
 
-function playClick(){let sound=clickSound.cloneNode();sound.play();}
+function playClick(){let s=clickSound.cloneNode();s.play();}
 
 function updateCPS(){
     cps=upgrades.reduce((sum,u)=>sum+u.count*u.baseCPS,0);
-    if(frenzyActive)cps*=2;
+    if(goldenActive)cps*=2;
     cpsEl.textContent=cps.toFixed(1);
 }
 
 function updateUI(){
     cookiesEl.textContent=Math.floor(cookies);
     upgradesEl.innerHTML='';
-    upgrades.forEach(u=>{
+    upgrades.forEach((u,i)=>{
         let price=Math.floor(u.baseCost*Math.pow(1.15,u.count));
         let contribution=cps>0?(u.count*u.baseCPS/cps*100).toFixed(1):0;
         const div=document.createElement('div');
@@ -100,54 +93,46 @@ function updateUI(){
         <div><button data-type="buy">Buy</button><button data-type="sell">Sell</button></div>`;
         div.querySelectorAll('button').forEach(b=>{
             b.addEventListener('click',()=>{
-                if(b.dataset.type==="buy"){if(cookies>=price){cookies-=price;u.count++;updateCPS();updateUI();upgradeClickEffect();playClick();}}
-                else{if(u.count>0){u.count--;cookies+=Math.floor(price/1.15);updateCPS();updateUI();upgradeClickEffect();playClick();}}
+                if(b.dataset.type==="buy"){
+                    if(cookies>=price){cookies-=price;u.count++;updateCPS();updateUI();cookieClickEffect();playClick();}
+                }else{
+                    if(u.count>0){u.count--;cookies+=Math.floor(price/1.15);updateCPS();updateUI();cookieClickEffect();playClick();}
+                }
             });
         });
         upgradesEl.appendChild(div);
     });
 }
 
-function upgradeClickEffect(){
-    cookieImg.style.transform='scale(1.15)';
+function cookieClickEffect(){
+    cookieImg.style.transform='scale(1.2)';
     setTimeout(()=>cookieImg.style.transform='scale(1)',100);
 }
 
 cookieImg.addEventListener('click',()=>{
-    cookies++;
-    cookiesEl.textContent=Math.floor(cookies);
-    cookieImg.style.transform='scale(1.2)';
-    setTimeout(()=>cookieImg.style.transform='scale(1)',100);
-    playClick();
+    cookies++;updateUI();cookieClickEffect();playClick();
 });
 
-function autoClick(){cookies+=cps/10;cookiesEl.textContent=Math.floor(cookies);}
+function autoClick(){cookies+=cps/10;updateUI();}
 setInterval(autoClick,100);
 
-function spawnGoldenCookie(){
-    if(Math.random()<0.005&&!frenzyActive){
+// Golden Cookie logic
+function spawnGolden(){
+    if(Math.random()<0.01&&!goldenActive){
         goldenCookie.style.display='block';
-        goldenCookie.style.top=Math.random()*70+'%';
-        goldenCookie.style.left=Math.random()*70+'%';
-        let clickListener=()=>{
-            frenzyActive=true;
-            goldenCookie.style.display='none';
-            frenzyText.style.display='block';
-            updateCPS();
-            clearTimeout(frenzyTimeout);
-            frenzyTimeout=setTimeout(()=>{
-                frenzyActive=false;
-                frenzyText.style.display='none';
-                updateCPS();
-            },5000);
-            goldenCookie.removeEventListener('click',clickListener);
-            playClick();
-        };
-        goldenCookie.addEventListener('click',clickListener);
-        setTimeout(()=>{goldenCookie.style.display='none'; goldenCookie.removeEventListener('click',clickListener);},5000);
+        goldenCookie.style.left=Math.random()*70+'vw';
+        goldenCookie.style.top=Math.random()*60+'vh';
     }
 }
-setInterval(spawnGoldenCookie,1000);
+setInterval(spawnGolden,1000);
+
+goldenCookie.addEventListener('click',()=>{
+    goldenActive=true;
+    goldenCookie.style.display='none';
+    goldenText.style.display='block';
+    updateCPS();
+    setTimeout(()=>{goldenActive=false;goldenText.style.display='none';updateCPS();},5000);
+});
 
 document.getElementById('save').addEventListener('click',()=>{
     const saveData={cookies:Math.floor(cookies),upgrades:upgrades.map(u=>u.count),playerName};
