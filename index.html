@@ -1,138 +1,460 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Creepy ARG File</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Cookie Scuffed Clicker TM</title>
+<style>
+:root{
+  --bg:#0f1720;
+  --card:rgba(255,255,255,0.06);
+  --accent:#ffc857;
+  --muted:rgba(255,255,255,0.7);
+  --glass:rgba(255,255,255,0.03);
+  --radius:16px;
+  --gap:12px;
+  --maxw:1200px;
+}
+*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+html,body{height:100%;margin:0;background:var(--bg);color:white;-webkit-font-smoothing:antialiased}
+body{
+  background-image:url('IMG_0770.png');
+  background-size:cover;
+  background-position:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  min-height:100vh;
+  backdrop-filter:blur(2px);
+}
+.container{
+  width:100%;
+  max-width:var(--maxw);
+  background:linear-gradient(180deg, rgba(6,10,13,0.55), rgba(6,10,13,0.7));
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+  padding:18px;
+  display:grid;
+  grid-template-columns: 1fr 380px;
+  gap:18px;
+  align-items:start;
+}
+@media (max-width:1000px){.container{grid-template-columns:1fr 320px;padding:14px}}
+@media (max-width:720px){.container{grid-template-columns:1fr;gap:12px;padding:12px}}
+.header{display:flex;align-items:center;gap:12px}
+.title{font-weight:700;font-size:clamp(18px,2.4vw,28px);letter-spacing:0.6px}
+.subtitle{color:var(--muted);font-size:clamp(12px,1.6vw,14px)}
+.left{
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  padding:18px;border-radius:12px;display:flex;flex-direction:column;gap:14px;min-height:420px;
+}
+.cookie-wrap{display:flex;align-items:center;justify-content:center;padding:18px;border-radius:12px;background:var(--glass);position:relative}
+.cookie{
+  width:clamp(140px,30vw,320px);
+  height:auto;
+  user-select:none;
+  touch-action:manipulation;
+  transition:transform 80ms ease;
+  will-change:transform;
+}
+.info-row{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.stat{
+  background:var(--card);
+  padding:10px 12px;border-radius:12px;min-width:0;flex:1;
+  display:flex;flex-direction:column;gap:6px;
+}
+.stat .label{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .value{font-weight:700;font-size:18px}
+.controls{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+  cursor:pointer;font-weight:600;font-size:14px;color:white;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn:active{transform:translateY(1px)}
+.small{font-size:13px;padding:8px 10px;border-radius:8px}
+.right{
+  display:flex;flex-direction:column;gap:14px;
+  min-width:260px;
+}
+.panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:12px}
+.upgrade{
+  display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;background:rgba(0,0,0,0.15);
+  border:1px solid rgba(255,255,255,0.03);
+}
+.upgrade img{width:56px;height:56px;object-fit:cover;border-radius:10px;flex-shrink:0}
+.upgrade .meta{flex:1;min-width:0}
+.upgrade .meta .name{font-weight:700;font-size:15px}
+.upgrade .meta .desc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upgrade .meta .cost{font-weight:800;margin-top:6px}
+.footer-row{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.brand{font-weight:700;color:var(--accent)}
+.hint{font-size:12px;color:var(--muted)}
+.controls input[type=file]{display:none}
+.big-numbers{font-size:clamp(22px,3.6vw,36px);font-weight:800;letter-spacing:0.6px}
+.lock{background:linear-gradient(90deg,#6b7280,#374151);padding:8px;border-radius:10px;color:#fff}
+.center{display:flex;align-items:center;justify-content:center}
+.indicator{font-size:12px;color:var(--muted)}
+.foot-actions{display:flex;gap:8px;flex-wrap:wrap}
+.save-file-name{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notice{font-size:13px;color:var(--muted)}
+</style>
 </head>
 <body>
-    <script>
-        function generateFile() {
-            // Creepy and unsettling content for the .txt file
-            const creepyText = `
-Internal VantaNode Transmission
-Sender: CMarin@VantaNode.gov.secure
-Timestamp: October 6, 2016 | 22:41 EST
-Recipient: Dr.Harrow@Sector9.ops.vnode
-Classification: LEVEL 3 – EYES ONLY
-Subject: Construct X-17 Awareness Drift
+<div class="container" role="application" aria-label="Cookie Scuffed Clicker TM">
+  <div class="left">
+    <div class="header">
+      <div>
+        <div class="title">Cookie Scuffed Clicker TM</div>
+        <div class="subtitle">A scuffed take on an old classic — play anywhere</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="subtitle" id="deviceLabel">Device</div>
+        <div class="indicator" id="versionLabel">v1.0</div>
+      </div>
+    </div>
+    <div class="cookie-wrap" aria-hidden="false">
+      <img src="IMG_0771.jpeg" alt="cookie" id="cookieImg" class="cookie" draggable="false" />
+    </div>
+    <div class="info-row">
+      <div class="stat">
+        <div class="label">Cookies</div>
+        <div class="value big-numbers" id="cookies">0</div>
+      </div>
+      <div class="stat">
+        <div class="label">CPS</div>
+        <div class="value" id="cps">0</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px">
+      <div class="controls">
+        <button class="btn small" id="saveBtn">Save</button>
+        <button class="btn small" id="loadBtn">Load</button>
+        <label class="btn small" for="fileInput">Choose Save</label>
+        <input id="fileInput" type="file" accept=".AmongUsRedSus" />
+        <button class="btn small" id="verifyBtn">You can't cheat</button>
+      </div>
+      <div class="controls">
+        <div class="hint">Autosave: <span id="autosaveState">ON</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+      <div class="notice">Tip: Tap or click cookie to earn. Upgrades increase CPS.</div>
+      <div class="save-file-name" id="lastSaveName">No file saved yet</div>
+    </div>
+  </div>
 
-Dr. Harrow,
-This is no longer a routine anomaly report.
-Construct X-17 has begun exhibiting behavior that suggests a sustained awareness of fabricated parameters within Simulation Layer 4.
+  <div class="right">
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-weight:800">Upgrades</div>
+        <div class="hint">Purchase to increase CPS</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+        <div class="upgrade" data-key="grandma">
+          <img src="IMG_0772.jpeg" alt="grandma" />
+          <div class="meta">
+            <div class="name">Grandma</div>
+            <div class="desc">Old and dependable. +1 CPS</div>
+            <div class="cost" id="cost-grandma">Cost: 50</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <div id="count-grandma">0</div>
+            <button class="btn small" data-buy="grandma">Buy</button>
+          </div>
+        </div>
 
-Earlier this week, I observed it pausing in non-critical render zones for long durations. It ignores objective triggers. It stands still and looks directly at camera nodes—as if acknowledging observation.
+        <div class="upgrade" data-key="farm">
+          <img src="IMG_0774.jpeg" alt="farm" />
+          <div class="meta">
+            <div class="name">Farm</div>
+            <div class="desc">Better cookies. +8 CPS</div>
+            <div class="cost" id="cost-farm">Cost: 500</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <div id="count-farm">0</div>
+            <button class="btn small" data-buy="farm">Buy</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-Twice now, I’ve witnessed it move before scripted environmental shifts, as though anticipating changes not yet processed.
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-weight:800">Save / Load</div>
+        <div class="hint">Local backup + downloadable save file</div>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn" id="exportBtn">Download Save File</button>
+          <button class="btn" id="importBtn">Load From File</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn" id="toggleAuto">Toggle Autosave</button>
+          <div class="indicator" id="autosaveInfo">Autosave interval: 30s</div>
+        </div>
+      </div>
+    </div>
 
-But what alarms me most—
-It’s looking up. Not at the skybox, not at the shaders. Past them. As if searching for us.
+    <div class="panel center" style="flex-direction:column;gap:8px">
+      <div style="font-weight:800">Save Integrity</div>
+      <div class="hint">Saves include a checksum to prevent tampering</div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn" id="checkFileBtn">Verify Chosen File</button>
+        <button class="btn" id="repairBtn">Repair from local backup</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-I recommend an immediate audit of its cognitive restriction net. Something is breaching the synthetic divide.
+<script>
+let state={
+  cookies:0,
+  cps:0,
+  lastClick:0,
+  upgrades:{grandma:{count:0,cost:50,cps:1},farm:{count:0,cost:500,cps:8}},
+  lastSavedName:null
+}
+const cookieImg=document.getElementById('cookieImg')
+const cookiesEl=document.getElementById('cookies')
+const cpsEl=document.getElementById('cps')
+const autosaveStateEl=document.getElementById('autosaveState')
+const lastSaveNameEl=document.getElementById('lastSaveName')
+const fileInput=document.getElementById('fileInput')
+const AUTOSAVE_INTERVAL=30000
+let autosave=true
+let autosaveTimer=null
+let lastSerialized=''
 
-— Cassidy Marin
-Systems Behavior Analyst
-VantaNode Simulation Division, Subsector Echo
+function format(n){
+  if(n>=1e12) return (n/1e12).toFixed(2)+'T'
+  if(n>=1e9) return (n/1e9).toFixed(2)+'B'
+  if(n>=1e6) return (n/1e6).toFixed(2)+'M'
+  if(n>=1e3) return (n/1e3).toFixed(2)+'k'
+  return Math.round(n).toString()
+}
 
-Internal Response Channel – VantaNode Oversight
-Sender: Dr.Harrow@Sector9.ops.vnode
-Timestamp: October 6, 2016 | 22:54 EST
-Recipient: CMarin@VantaNode.gov.secure
-Classification: LEVEL 3 – EYES ONLY
-Subject: Re: Construct X-17 Awareness Drift
+function recalcCPS(){
+  let total=0
+  for(let k in state.upgrades){
+    total+=state.upgrades[k].count*state.upgrades[k].cps
+  }
+  state.cps=total
+  cpsEl.textContent=state.cps.toFixed(2)
+}
 
-Ms. Marin,
-We warned you during containment briefings: X-17 is not like the others.
-This construct was flagged during Initialization Phase for nonstandard pattern recognition.
+function render(){
+  cookiesEl.textContent=format(state.cookies)
+  cpsEl.textContent=state.cps.toFixed(2)
+  for(let k in state.upgrades){
+    const c=document.getElementById('count-'+k)
+    const cost=document.getElementById('cost-'+k)
+    c.textContent=state.upgrades[k].count
+    cost.textContent='Cost: '+format(state.upgrades[k].cost)
+  }
+  if(state.lastSavedName) lastSaveNameEl.textContent=state.lastSavedName
+}
 
-If it has achieved partial or complete environmental comprehension, we are no longer dealing with a controllable subject.
+cookieImg.addEventListener('pointerdown',()=>{
+  const t=Date.now()
+  const delta=(t-state.lastClick)||1
+  state.lastClick=t
+  state.cookies+=1
+  cookieImg.style.transform='scale(0.98)'
+  setTimeout(()=>cookieImg.style.transform='scale(1)',80)
+  recalcCPS()
+  render()
+})
 
-Continue observation.
-Detail *everything.*
-If the illusion collapses for X-17, it could destabilize other entities. Including personnel.
+document.querySelectorAll('[data-buy]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const key=btn.getAttribute('data-buy')
+    const up=state.upgrades[key]
+    if(state.cookies>=up.cost){
+      state.cookies-=up.cost
+      up.count+=1
+      up.cost=Math.ceil(up.cost*1.35)
+      recalcCPS()
+      render()
+      saveLocalBackup()
+    } else {
+      btn.animate([{transform:'translateY(0)'},{transform:'translateY(-6px)'},{transform:'translateY(0)'}],{duration:200})
+    }
+  })
+})
 
-— Dr. Harrow
-Lead Architect, Simulation Command
-VantaNode Oversight Sector 9
+function tick(){
+  state.cookies+=state.cps/10
+  render()
+}
+setInterval(tick,100)
 
-Secure Report Submission – Manual Override Required
-Sender: CMarin@VantaNode.gov.secure
-Timestamp: October 6, 2016 | 23:12 EST
-Recipient: Dr.Harrow@Sector9.ops.vnode
-Classification: LEVEL 3 – EYES ONLY
-Subject: URGENT: Simulation Instability
+function sha256hex(str){
+  const enc=new TextEncoder().encode(str)
+  return crypto.subtle.digest('SHA-256',enc).then(buf=>{
+    const h=Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('')
+    return h
+  })
+}
 
-This is no longer about X-17 alone.
+function serializeState(){
+  const clone=JSON.parse(JSON.stringify(state))
+  clone._meta={ts:Date.now()}
+  return JSON.stringify(clone)
+}
 
-My workstation has begun operating outside command parameters. Terminal logs are rewriting themselves.
-Archived files are vanishing. When I shut the system down, it powers back on—no remote command, no heat signature.
+async function makeSaveBlob(){
+  const payload=serializeState()
+  const checksum=await sha256hex(payload)
+  const fileobj={payload,checksum}
+  return new Blob([btoa(unescape(encodeURIComponent(JSON.stringify(fileobj))))],{type:'application/octet-stream'})
+}
 
-Earlier today, I received an email from myself.
-Time-stamped three days from now. The message simply said:
+async function exportSave(){
+  const blob=await makeSaveBlob()
+  const rn=Math.floor(Math.random()*9000000)+1000000
+  const name=rn+'_save.AmongUsRedSus'
+  const url=URL.createObjectURL(blob)
+  const a=document.createElement('a')
+  a.href=url
+  a.download=name
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+  state.lastSavedName=name
+  saveLocalBackup()
+  render()
+}
 
-“You need to wake up.”
+async function autosaveRoutine(){
+  if(!autosave) return
+  const serialized=serializeState()
+  if(serialized===lastSerialized) return
+  lastSerialized=serialized
+  const blob=await makeSaveBlob()
+  const rn=Math.floor(Math.random()*9000000)+1000000
+  const name=rn+'_autosave.AmongUsRedSus'
+  const url=URL.createObjectURL(blob)
+  const a=document.createElement('a')
+  a.href=url
+  a.download=name
+  a.style.display='none'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+  state.lastSavedName=name
+  saveLocalBackup()
+  render()
+}
 
-And when I ran the anomaly trace, X-17 appeared in the result log.
+function startAutosave(){
+  if(autosaveTimer) clearInterval(autosaveTimer)
+  autosaveTimer=setInterval(autosaveRoutine,AUTOSAVE_INTERVAL)
+}
 
-Doctor... the construct is no longer reacting like a simulation-aware subject.
-It is behaving like a prisoner who remembers being free.
+function stopAutosave(){
+  if(autosaveTimer) clearInterval(autosaveTimer); autosaveTimer=null
+}
 
-I’ve stopped sleeping. I feel watched.
-Not by our monitoring network—but by something inside.
+document.getElementById('saveBtn').addEventListener('click',exportSave)
+document.getElementById('exportBtn').addEventListener('click',exportSave)
+document.getElementById('toggleAuto').addEventListener('click',()=>{
+  autosave=!autosave
+  autosaveStateEl.textContent=autosave?'ON':'OFF'
+  document.getElementById('autosaveInfo').textContent='Autosave interval: 30s'
+  if(autosave) startAutosave() else stopAutosave()
+})
 
-I fear the breach is not in Layer 4.
-I fear it’s in us.
+fileInput.addEventListener('change',async(e)=>{
+  const f=e.target.files[0]
+  if(!f) return
+  const text=await f.text()
+  try{
+    const decoded=JSON.parse(decodeURIComponent(escape(atob(text))))
+    const payload=decoded.payload
+    const checksum=decoded.checksum
+    const actual=await sha256hex(payload)
+    if(actual!==checksum) {alert("Save failed: checksum mismatch (you can't cheat)"); return}
+    const parsed=JSON.parse(payload)
+    state=Object.assign(state,parsed)
+    recalcCPS()
+    render()
+    saveLocalBackup()
+    alert('Save loaded successfully')
+  }catch(err){
+    alert('Invalid save file')
+  }
+  fileInput.value=''
+})
 
-— Cassidy Marin
-Systems Behavior Analyst
-VantaNode Echo
+document.getElementById('loadBtn').addEventListener('click',()=>fileInput.click())
+document.getElementById('importBtn').addEventListener('click',()=>fileInput.click())
 
-Oversight Final Response – Restricted Dispatch
-Sender: Dr.Harrow@Sector9.ops.vnode
-Timestamp: October 7, 2016 | 21:00 EST
-Recipient: CMarin@VantaNode.gov.secure
-Classification: LEVEL 3 – EYES ONLY
-Subject: RE: Simulation Instability
+document.getElementById('verifyBtn').addEventListener('click',async()=>{
+  alert('To verify a save file select it via "Choose Save" then click "Verify Chosen File".')
+})
 
-This communication node is now under administrative quarantine.
+document.getElementById('checkFileBtn').addEventListener('click',async()=>{
+  const fi=fileInput.files[0]
+  if(!fi){alert('Choose a .AmongUsRedSus file first');return}
+  const text=await fi.text()
+  try{
+    const decoded=JSON.parse(decodeURIComponent(escape(atob(text))))
+    const payload=decoded.payload
+    const checksum=decoded.checksum
+    const actual=await sha256hex(payload)
+    if(actual!==checksum) {alert("Verification failed: checksum mismatch (can't cheat)");return}
+    alert('Verification passed: file is intact')
+  }catch(e){alert('Invalid save file')}
+})
 
-All further dialogue will be reviewed by the VantaNode Oversight Board.
-You are to cease interaction with Construct X-17 immediately.
+function saveLocalBackup(){
+  localStorage.setItem('csc_state_backup',serializeState())
+  localStorage.setItem('csc_state_checksum','none')
+  localStorage.setItem('csc_state_name',state.lastSavedName||'localbackup')
+  localStorage.setItem('csc_ts',Date.now().toString())
+}
 
-Initiate Lockdown Protocol Gamma-7.
-Seal your office. Do not attempt to leave the facility until we contact you.
+document.getElementById('repairBtn').addEventListener('click',()=>{
+  const b=localStorage.getItem('csc_state_backup')
+  if(!b){alert('No local backup found');return}
+  try{
+    const parsed=JSON.parse(b)
+    state=Object.assign(state,parsed)
+    recalcCPS()
+    render()
+    alert('Repaired from local backup')
+  }catch(e){alert('Backup corrupted')}
+})
 
-Cassidy, if you are receiving messages from yourself, do not respond.
-You must remember:
-This is the only version of you that matters.
+function tryLoadLocal(){
+  const b=localStorage.getItem('csc_state_backup')
+  if(!b) return
+  try{
+    const parsed=JSON.parse(b)
+    state=Object.assign(state,parsed)
+    recalcCPS()
+    render()
+  }catch(e){}
+}
 
-— Dr. Harrow
-Lead Architect
-VantaNode Sector 9
-[End of Authorized Transmission]
-qccyb://vncjyqhbrljublrnwlnb.prcqdk.rx/Rvyxacnwc/
-`;
+window.addEventListener('load',()=>{
+  tryLoadLocal()
+  recalcCPS()
+  render()
+  startAutosave()
+  autosaveStateEl.textContent=autosave?'ON':'OFF'
+  const ua=navigator.userAgent.toLowerCase()
+  let dev='Desktop'
+  if(/ipad|tablet/.test(ua)) dev='iPad/Tablet'
+  else if(/mobi|android|iphone/.test(ua)) dev='Phone'
+  document.getElementById('deviceLabel').textContent=dev
+})
 
-            // Create a Blob with the creepy text
-            const blob = new Blob([creepyText], { type: 'text/plain' });
-
-            // Create a download link
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'VantaNode_Protocol.XT23edg7d2f8f35d2b9a.txt';  // File name for download
-
-            // Append the link to the document and simulate a click to trigger the download
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Close the current window immediately after the download
-            window.close();
-        }
-
-        // Trigger the file generation and download as soon as the page loads
-        window.onload = generateFile;
-    </script>
+</script>
 </body>
 </html>
-
