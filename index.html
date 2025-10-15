@@ -39,7 +39,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 .achievements{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:500px;padding-right:8px;}
 .achievement{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:10px;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;position:relative;}
 .achievement.locked::after{content:"?";position:absolute;top:0;right:4px;font-weight:900;}
-.ach-btn{padding:4px 8px;background:#FFD54D;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-left:6px;}
+.ach-btn{padding:8px 12px;background:#FFD54D;border:none;border-radius:8px;cursor:pointer;font-weight:700;margin-left:6px;flex:1;}
 .notify{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);padding:10px 18px;border-radius:12px;color:#000;font-weight:800;opacity:0;transition:opacity 0.4s ease;z-index:9999;}
 .gold-cookie{position:absolute;width:64px;height:auto;z-index:60;pointer-events:none;animation:goldRotate 5s linear infinite;}
 @keyframes goldRotate{0%{transform:rotate(0deg) translateX(-100vw);}100%{transform:rotate(360deg) translateX(100vw);}}
@@ -121,10 +121,7 @@ const upgrades=[
 {id:'bank',name:'Bank',image:'IMG_0779.jpeg',baseCost:140000,baseCPS:1400,count:0,unlock:140000},
 {id:'temple',name:'Temple',image:'IMG_0780.jpeg',baseCost:2000000,baseCPS:7800,count:0,unlock:2000000},
 {id:'wizard',name:'Wizard Tower',image:'IMG_0781.jpeg',baseCost:33000000,baseCPS:44000,count:0,unlock:33000000},
-{id:'trollpedia',name:'TrollPedia',image:'TrollPedia.png',baseCost:560000000,baseCPS:260000,count:0,unlock:560000000},
-{id:'basement',name:'TheGuyInYourGrannysBasementV2',image:'TheGuyInYourGrannysBasementV2.png',baseCost:1000000000,baseCPS:1500000,count:0,unlock:1000000000},
-{id:'nuclear',name:'Legalize Nuclear Bombs',image:'legalize nuclear bombs.jpg',baseCost:5000000000,baseCPS:10000000,count:0,unlock:5000000000},
-{id:'sugar',name:'We Got Sugar',image:'we got surgar.jpg',baseCost:10000000000,baseCPS:25000000,count:0,unlock:10000000000}
+{id:'trollpedia',name:'TrollPedia',image:'TrollPedia.png',baseCost:500000000,baseCPS:260000,count:0,unlock:500000000}
 ];
 
 const achievements=[
@@ -151,63 +148,66 @@ const achievements=[
 {name:'Lazy Genius',desc:'AFK and still making more cookies than everyone else',cond:()=>cookies>=500000,unlocked:false}
 ];
 
+function showNotify(msg){notifyBox.textContent=msg;notifyBox.style.opacity=1;setTimeout(()=>{notifyBox.style.opacity=0;},2500);}
 function calcPrice(u){return Math.floor(u.baseCost*Math.pow(1.15,u.count));}
-function computeCPS(){cps=0;upgrades.forEach(u=>{cps+=u.baseCPS*u.count});if(goldActive)cps*=goldCPSMultiplier;}
+function computeCPS(){cps=upgrades.reduce((a,u)=>a+u.baseCPS*u.count,0);}
 function updateCounters(){statsCookies.textContent='Cookies: '+Math.floor(cookies);statsCPS.textContent='CPS: '+cps.toFixed(1);}
-function showNotify(text){notifyBox.textContent=text;notifyBox.style.opacity='1';setTimeout(()=>{notifyBox.style.opacity='0'},2000);}
-function buildUpgradesUI(){
-  upgradeScroll.innerHTML='';
-  upgrades.forEach(u=>{
-    const div=document.createElement('div');div.classList.add('upgrade');if(cookies>=u.unlock)div.classList.add('unlocked');
-    const img=document.createElement('img');img.src=u.image;
-    const info=document.createElement('div');info.classList.add('info');
-    const title=document.createElement('div');title.classList.add('title');title.textContent=u.name;
-    const meta=document.createElement('div');meta.classList.add('meta');
-    const priceEl=document.createElement('div');priceEl.classList.add('price');priceEl.textContent='Price: '+calcPrice(u);
-    const ownedEl=document.createElement('div');ownedEl.classList.add('owned');ownedEl.textContent='Owned: '+u.count;
-    const cpsEl=document.createElement('div');cpsEl.classList.add('cps-total');cpsEl.textContent='Total CPS: '+(u.baseCPS*u.count).toFixed(1);
-    meta.appendChild(priceEl);meta.appendChild(ownedEl);meta.appendChild(cpsEl);
-    info.appendChild(title);info.appendChild(meta);
-    div.appendChild(img);div.appendChild(info);
-    div.addEventListener('click',()=>{
-      if(!buyMode){if(u.count>0){u.count--;updateAllUI();}} else {if(cookies>=calcPrice(u)){cookies-=calcPrice(u);u.count++;updateAllUI();}}
-    });
-    upgradeScroll.appendChild(div);
-  });
-}
+function buildUpgradesUI(){upgradeScroll.innerHTML='';upgrades.forEach(u=>{
+  if(cookies>=u.unlock) u.unlocked=true;
+  const div=document.createElement('div');div.classList.add('upgrade');if(!u.unlocked)div.classList.add('locked');
+  const img=document.createElement('img');img.src=u.image;
+  const info=document.createElement('div');info.className='info';
+  const title=document.createElement('div');title.className='title';title.textContent=u.name;
+  const meta=document.createElement('div');meta.className='meta';
+  const priceEl=document.createElement('div');priceEl.className='price';priceEl.textContent='Price: '+calcPrice(u);
+  const ownedEl=document.createElement('div');ownedEl.className='owned';ownedEl.textContent='Owned: '+u.count;
+  const cpsEl=document.createElement('div');cpsEl.className='cps-total';cpsEl.textContent='Total CPS: '+(u.baseCPS*u.count).toFixed(1);
+  meta.append(priceEl,ownedEl,cpsEl);info.append(title,meta);div.append(img,info);
+  div.addEventListener('click',()=>{if(!buyMode){if(u.count>0){u.count--;updateAllUI();}} else {if(cookies>=calcPrice(u)){cookies-=calcPrice(u);u.count++;updateAllUI();}}});
+  upgradeScroll.appendChild(div);
+});}
+
 function buildAchievements(){
   achievementsList.innerHTML='';
   achievements.forEach(a=>{
     if(!a.unlocked && a.cond()){a.unlocked=true;showNotify('Achievement unlocked: '+a.name);}
-    const div=document.createElement('div');div.classList.add('achievement');if(!a.unlocked)div.classList.add('locked');
+    const div=document.createElement('div');div.className='achievement';if(!a.unlocked)div.classList.add('locked');
     div.textContent=a.name;
-    const btn=document.createElement('button');btn.classList.add('ach-btn');btn.textContent='View';btn.addEventListener('click',()=>{if(a.unlocked){alert(a.name+'\n'+a.desc);} else {alert(a.name+' is locked!');}});
+    const btn=document.createElement('button');btn.className='ach-btn';btn.textContent='View';
+    btn.addEventListener('click',()=>{if(a.unlocked){alert(a.name+'\n'+a.desc);} else {alert(a.name+' is locked!');}});
     div.appendChild(btn);
     achievementsList.appendChild(div);
   });
 }
+
 function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150);}
 cookieEl.addEventListener('click',()=>{
   let now=Date.now();if(now-antiClickTimeout<50)return;antiClickTimeout=now;cookies++;clickCount++;lastClick=now;updateCounters();showClickEffect();clickSound.cloneNode().play();
 });
+
 modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');});
+
 saveBtn.addEventListener('click',()=>{
   const saveData={c:cookies,u:upgrades.map(u=>u.count),n:playerName,lastClick:lastClick};
-  const blob=new Blob([JSON.stringify(saveData)],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CookieScuffedSave.txt';a.click();
+  const blob=new Blob([btoa(JSON.stringify(saveData))],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CookieScuffedSave.txt';a.click();
 });
+
 loadBtn.addEventListener('click',()=>{
   const input=document.createElement('input');input.type='file';input.accept='.txt';input.onchange=e=>{
     const file=e.target.files[0];const reader=new FileReader();
-    reader.onload=function(ev){try{const data=JSON.parse(ev.target.result);cookies=data.c;upgrades.forEach((u,i)=>{u.count=data.u[i]});playerName=data.n;lastClick=data.lastClick;playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}catch(err){alert('Invalid save file');}updateAllUI();}
+    reader.onload=function(ev){try{const data=JSON.parse(atob(ev.target.result));cookies=data.c;upgrades.forEach((u,i)=>{u.count=data.u[i]});playerName=data.n;lastClick=data.lastClick;playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}catch(err){alert('Invalid save file');}updateAllUI();}
     reader.readAsText(file);
   };input.click();
 });
+
 openSettings.addEventListener('click',()=>{settingsModal.style.display='flex';buildAchievements();});
 closeSettings.addEventListener('click',()=>{settingsModal.style.display='none';});
+
 playerNameDisplay.addEventListener('click',()=>{
   const newName=prompt('Enter your name:',playerName.replace(' factory',''));
   if(newName!==null && newName.trim()!==''){playerName=newName.trim()+' factory';playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}
 });
+
 function spawnGoldCookie(){
   if(goldActive)return;
   goldActive=true;goldEnd=Date.now()+60000;
@@ -215,13 +215,16 @@ function spawnGoldCookie(){
   document.body.appendChild(gold);
   setTimeout(()=>{gold.remove();goldActive=false;updateAllUI();},60000);
 }
+
 setInterval(()=>{
   let diff=(Date.now()-lastClick)/1000;
   let gain=cps/10;if(goldActive)gain*=goldCPSMultiplier;
   cookies+=gain;updateCounters();buildAchievements();
 },100);
+
 function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements();}
 updateAllUI();
+
 music.play().catch(()=>{});
 </script>
 </body>
