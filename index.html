@@ -64,6 +64,8 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
   <div class="cookie-area">
     <div class="cookie-wrap">
       <img id="cookie" src="IMG_0771.jpeg" alt="cookie" draggable="false">
+      <audio id="clickSound" src="computer-mouse-click-352734.mp3"></audio>
+      <audio id="music" src="18038_sck.mp3" loop autoplay></audio>
     </div>
     <div class="stats">
       <div class="big" id="cookiesCount">Cookies: 0</div>
@@ -110,6 +112,8 @@ const closeSettings=document.getElementById('closeSettings');
 const settingsPlayerName=document.getElementById('settingsPlayerName');
 const achievementsList=document.getElementById('achievementsList');
 const notifyBox=document.getElementById('notifyBox');
+const clickSound=document.getElementById('clickSound');
+const music=document.getElementById('music');
 
 const upgrades=[
 {id:'cursor',name:'Cursor',image:'IMG_0775.png',baseCost:15,baseCPS:0.1,count:0,unlock:0},
@@ -158,10 +162,13 @@ const achievements=[
 {name:'Ultimate Troll',desc:'Own 5 TrollPedia',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=5,unlocked:false},
 {name:'Basement Legend',desc:'Own 3 TheGuyInYourGrannysBasementV2',cond:()=>upgrades.find(u=>u.id=='basement').count>=3,unlocked:false},
 {name:'Nuclear Tycoon',desc:'Own 2 Legalize Nuclear Bombs',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=2,unlocked:false},
-{name:'Sugar King',desc:'Own 10 We Got Sugar',cond:()=>upgrades.find(u=>u.id=='sugar').count>=10,unlocked:false}];
+{name:'Sugar King',desc:'Own 10 We Got Sugar',cond:()=>upgrades.find(u=>u.id=='sugar').count>=10,unlocked:false},
+{name:'Extra Clicker',desc:'Click 1000 times',cond:()=>cookies>=1000,unlocked:false},
+{name:'Cookie Tycoon',desc:'Reach 500,000 cookies',cond:()=>cookies>=500000,unlocked:false},
+{name:'Supreme AFK',desc:'AFK for 2 hours',cond:()=>Date.now()-lastClick>=7200000,unlocked:false}
+];
 
 const gameStart=Date.now();
-
 function calcPrice(u){return Math.floor(u.baseCost*Math.pow(1.15,u.count));}
 function computeCPS(){cps=0;upgrades.forEach(u=>{cps+=u.baseCPS*u.count});if(goldActive)cps*=goldCPSMultiplier;}
 function updateCounters(){statsCookies.textContent='Cookies: '+Math.floor(cookies);statsCPS.textContent='CPS: '+cps.toFixed(1);}
@@ -200,7 +207,9 @@ function buildAchievements(){
   });
 }
 function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150);}
-cookieEl.addEventListener('click',()=>{cookies++;lastClick=Date.now();updateCounters();showClickEffect();});
+cookieEl.addEventListener('click',()=>{
+  cookies++;lastClick=Date.now();updateCounters();showClickEffect();clickSound.currentTime=0;clickSound.play();
+});
 modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');});
 saveBtn.addEventListener('click',()=>{
   const saveData={c:cookies,u:upgrades.map(u=>u.count),n:playerName,lastClick:lastClick};
