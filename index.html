@@ -97,7 +97,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 
 <script>
 let cookies=0,cps=0,playerName='Defult factory',buyMode=true,lastClick=Date.now();
-let goldActive=false,goldEnd=0,goldCPSMultiplier=2;
+let goldActive=false,goldEnd=0,goldCPSMultiplier=2,clicksCount=0,antiCheatUsed=false;
 const cookieEl=document.getElementById('cookie');
 const statsCookies=document.getElementById('cookiesCount');
 const statsCPS=document.getElementById('cpsCount');
@@ -119,7 +119,7 @@ const upgrades=[
 {id:'cursor',name:'Cursor',image:'IMG_0775.png',baseCost:15,baseCPS:0.1,count:0,unlock:0},
 {id:'grandma',name:'Grandma',image:'IMG_0772.jpeg',baseCost:100,baseCPS:1,count:0,unlock:0},
 {id:'farm',name:'Farm',image:'IMG_0774.jpeg',baseCost:500,baseCPS:8,count:0,unlock:500},
-{id:'mine',name:'Mine',image:'IMG_0776.jpeg',baseCost:2000,baseCPS:47,count:0,unlock:2000},
+{id:'mine',name:'IMG_0776',name:'Mine',baseCost:2000,baseCPS:47,count:0,unlock:2000},
 {id:'factory',name:'Factory',image:'IMG_0777.jpeg',baseCost:10000,baseCPS:260,count:0,unlock:10000},
 {id:'bank',name:'Bank',image:'IMG_0779.jpeg',baseCost:140000,baseCPS:1400,count:0,unlock:140000},
 {id:'temple',name:'Temple',image:'IMG_0780.jpeg',baseCost:2000000,baseCPS:7800,count:0,unlock:2000000},
@@ -131,42 +131,44 @@ const upgrades=[
 ];
 
 const achievements=[
-{name:'First Click',desc:'Click one time',cond:()=>cookies>=1,unlocked:false},
-{name:'50 Clicks',desc:'You got 50 clicks I am proud',cond:()=>cookies>=50,unlocked:false},
-{name:'Are you lazy?',desc:'Not click for 5 minutes',cond:()=>Date.now()-lastClick>=300000,unlocked:false},
-{name:'WTF are you AFK?',desc:'Wow you are afk or just really lazy for 35 minutes',cond:()=>Date.now()-lastClick>=2100000,unlocked:false},
-{name:'Weird Granny Addiction',desc:'Do you have something with grandmas AND WHY DO YOU HAVE 25000 OF THEM YOU SICKO',cond:()=>upgrades.find(u=>u.id=='grandma').count>=25000,unlocked:false},
-{name:'Million Cookies',desc:'You reached 1,000,000 cookies',cond:()=>cookies>=1000000,unlocked:false},
-{name:'Baker\'s Dozen',desc:'Owned 13 cursors',cond:()=>upgrades.find(u=>u.id=='cursor').count>=13,unlocked:false},
-{name:'Farm Frenzy',desc:'Owned 10 farms',cond:()=>upgrades.find(u=>u.id=='farm').count>=10,unlocked:false},
-{name:'Mining Master',desc:'Owned 5 mines',cond:()=>upgrades.find(u=>u.id=='mine').count>=5,unlocked:false},
-{name:'Factory King',desc:'Owned 3 factories',cond:()=>upgrades.find(u=>u.id=='factory').count>=3,unlocked:false},
-{name:'Temple Tycoon',desc:'Owned 2 temples',cond:()=>upgrades.find(u=>u.id=='temple').count>=2,unlocked:false},
-{name:'Wizard Lord',desc:'Owned 1 wizard tower',cond:()=>upgrades.find(u=>u.id=='wizard').count>=1,unlocked:false},
-{name:'Troll Master',desc:'Owned 1 TrollPedia',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=1,unlocked:false},
-{name:'Basement Overlord',desc:'Owned 1 TheGuyInYourGrannysBasementV2',cond:()=>upgrades.find(u=>u.id=='basement').count>=1,unlocked:false},
-{name:'Nuclear Fan',desc:'Owned 1 Legalize Nuclear Bombs',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=1,unlocked:false},
-{name:'Sugar Rush',desc:'Owned 1 We Got Sugar',cond:()=>upgrades.find(u=>u.id=='sugar').count>=1,unlocked:false},
-{name:'Cookie God',desc:'Reach 100,000,000 cookies',cond:()=>cookies>=100000000,unlocked:false},
-{name:'AFK Millionaire',desc:'Earn 1,000,000 cookies AFK',cond:()=>cookies>=1000000&&Date.now()-lastClick>=600000,unlocked:false},
-{name:'Golden Time',desc:'Activate golden cookie',cond:()=>goldActive,unlocked:false},
-{name:'Ultimate Player',desc:'Own all upgrades at least once',cond:()=>upgrades.every(u=>u.count>=1),unlocked:false},
-{name:'Click Maniac',desc:'Click 500 times',cond:()=>cookies>=500,unlocked:false},
-{name:'Cookie Collector',desc:'Own 50 upgrades combined',cond:()=>upgrades.reduce((a,b)=>a+b.count,0)>=50,unlocked:false},
-{name:'Time Flies',desc:'Play for 1 hour',cond:()=>Date.now()-gameStart>=3600000,unlocked:false},
-{name:'Cookie Monster',desc:'Click 10,000 cookies',cond:()=>cookies>=10000,unlocked:false},
-{name:'Grandma Slayer',desc:'Own 100 grandmas',cond:()=>upgrades.find(u=>u.id=='grandma').count>=100,unlocked:false},
-{name:'Factory Overload',desc:'Own 50 factories',cond:()=>upgrades.find(u=>u.id=='factory').count>=50,unlocked:false},
-{name:'Wizard Master',desc:'Own 20 wizard towers',cond:()=>upgrades.find(u=>u.id=='wizard').count>=20,unlocked:false},
-{name:'Temple Guru',desc:'Own 10 temples',cond:()=>upgrades.find(u=>u.id=='temple').count>=10,unlocked:false},
-{name:'Ultimate Troll',desc:'Own 5 TrollPedia',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=5,unlocked:false},
-{name:'Basement Legend',desc:'Own 3 TheGuyInYourGrannysBasementV2',cond:()=>upgrades.find(u=>u.id=='basement').count>=3,unlocked:false},
-{name:'Nuclear Tycoon',desc:'Own 2 Legalize Nuclear Bombs',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=2,unlocked:false},
-{name:'Sugar King',desc:'Own 10 We Got Sugar',cond:()=>upgrades.find(u=>u.id=='sugar').count>=10,unlocked:false},
-{name:'Extra Clicker',desc:'Click 1000 times',cond:()=>cookies>=1000,unlocked:false},
-{name:'Cookie Tycoon',desc:'Reach 500,000 cookies',cond:()=>cookies>=500000,unlocked:false},
-{name:'Supreme AFK',desc:'AFK for 2 hours',cond:()=>Date.now()-lastClick>=7200000,unlocked:false}
+  {name:'First Click',desc:'Wow, you actually clicked once. Amazing.',cond:()=>cookies>=1,unlocked:false},
+  {name:'50 Clicks',desc:'50 clicks! Are your fingers okay?',cond:()=>cookies>=50,unlocked:false},
+  {name:'Are you lazy?',desc:'You didn’t click for 5 whole minutes. Congrats, lazybones.',cond:()=>Date.now()-lastClick>=300000,unlocked:false},
+  {name:'WTF are you AFK?',desc:'35 minutes AFK? That’s commitment… or stupidity.',cond:()=>Date.now()-lastClick>=2100000,unlocked:false},
+  {name:'Weird Granny Addiction',desc:'Why do you have 25,000 grandmas? Do you even sleep?',cond:()=>upgrades.find(u=>u.id=='grandma').count>=25000,unlocked:false},
+  {name:'AntiCheat',desc:'Cheated using console. We see you, sneaky bastard.',cond:()=>antiCheatUsed,unlocked:false},
+  {name:'Click Maniac',desc:'500 clicks. Your mouse hates you now.',cond:()=>cookies>=500,unlocked:false},
+  {name:'Cookie Collector',desc:'Own 50 upgrades combined. Are you hoarding or obsessed?',cond:()=>upgrades.reduce((a,b)=>a+b.count,0)>=50,unlocked:false},
+  {name:'Time Flies',desc:'Played for 1 hour straight. Get a life.',cond:()=>Date.now()-gameStart>=3600000,unlocked:false},
+  {name:'Cookie Monster',desc:'10,000 clicks. Is your mouse melting yet?',cond:()=>cookies>=10000,unlocked:false},
+  {name:'Grandma Slayer',desc:'Own 100 grandmas. Kill them softly.',cond:()=>upgrades.find(u=>u.id=='grandma').count>=100,unlocked:false},
+  {name:'Factory Overload',desc:'50 factories. Smells like corporate greed.',cond:()=>upgrades.find(u=>u.id=='factory').count>=50,unlocked:false},
+  {name:'Wizard Master',desc:'20 wizard towers. Hogwarts called, they want their budget back.',cond:()=>upgrades.find(u=>u.id=='wizard').count>=20,unlocked:false},
+  {name:'Temple Guru',desc:'10 temples. Pray to RNGesus.',cond:()=>upgrades.find(u=>u.id=='temple').count>=10,unlocked:false},
+  {name:'Ultimate Troll',desc:'Own 5 TrollPedia. Troll level: Expert.',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=5,unlocked:false},
+  {name:'Basement Legend',desc:'3 creepy basement dwellers. Do you even leave your house?',cond:()=>upgrades.find(u=>u.id=='basement').count>=3,unlocked:false},
+  {name:'Nuclear Tycoon',desc:'Own 2 nuclear bombs. Apocalypse is near.',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=2,unlocked:false},
+  {name:'Sugar King',desc:'10 sugar upgrades. Diabetes incoming.',cond:()=>upgrades.find(u=>u.id=='sugar').count>=10,unlocked:false},
+  {name:'Extra Clicker',desc:'1,000 clicks. Finger cramps? Just wait.',cond:()=>cookies>=1000,unlocked:false},
+  {name:'Cookie Tycoon',desc:'Half a million cookies. Sweet, sweet success.',cond:()=>cookies>=500000,unlocked:false},
+  {name:'Supreme AFK',desc:'AFK for 2 hours. Hope you’re still alive.',cond:()=>Date.now()-lastClick>=7200000,unlocked:false},
+  {name:'Lazy Overlord',desc:'AFK for 4 hours. Professional procrastinator.',cond:()=>Date.now()-lastClick>=14400000,unlocked:false},
+  {name:'Clickaholic',desc:'10,000 clicks. Mouse insurance required.',cond:()=>cookies>=10000,unlocked:false},
+  {name:'Grandma Hoarder',desc:'50,000 grandmas. Send help.',cond:()=>upgrades.find(u=>u.id=='grandma').count>=50000,unlocked:false},
+  {name:'Farm Frenzy',desc:'100 farms. You smell like dirt now.',cond:()=>upgrades.find(u=>u.id=='farm').count>=100,unlocked:false},
+  {name:'Mine Maniac',desc:'50 mines. Mining simulator pro.',cond:()=>upgrades.find(u=>u.id=='mine').count>=50,unlocked:false},
+  {name:'Bankrupt?',desc:'Hit negative cookies. Nice going.',cond:()=>cookies<0,unlocked:false},
+  {name:'Music Hater',desc:'Muted music. Rebel.',cond:()=>music.muted,unlocked:false},
+  {name:'Gold Hoarder',desc:'Collected 10 gold cookies. Bling bling.',cond:()=>goldCollected>=10,unlocked:false},
+  {name:'Cookie God',desc:'1,000,000 cookies. Worship me.',cond:()=>cookies>=1000000,unlocked:false},
+  {name:'Overachiever',desc:'All upgrades maxed. Are you insane?',cond:()=>upgrades.every(u=>u.count>=9999),unlocked:false},
+  {name:'AFK King',desc:'No activity for 8 hours. Congratulations, sleep deprived.',cond:()=>Date.now()-lastClick>=28800000,unlocked:false},
+  {name:'Speed Demon',desc:'500 CPS. You cheat, don’t lie.',cond:()=>cps>=500,unlocked:false},
+  {name:'Troll Supreme',desc:'Own all TrollPedia upgrades. You troll hard.',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=upgrades.find(u=>u.id=='trollpedia').max||false,unlocked:false},
+  {name:'Cookie Psychopath',desc:'Clicked 50,000 times. Finger amputations imminent.',cond:()=>cookies>=50000,unlocked:false},
+  {name:'Gold Cookie Maniac',desc:'Caught 50 gold cookies. Bling overload.',cond:()=>goldCollected>=50,unlocked:false},
 ];
+
 
 const gameStart=Date.now();
 function calcPrice(u){return Math.floor(u.baseCost*Math.pow(1.15,u.count));}
@@ -208,7 +210,8 @@ function buildAchievements(){
 }
 function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150);}
 cookieEl.addEventListener('click',()=>{
-  cookies++;lastClick=Date.now();updateCounters();showClickEffect();clickSound.currentTime=0;clickSound.play();
+  cookies++;lastClick=Date.now();clicksCount++;updateCounters();showClickEffect();
+  const sound=new Audio('computer-mouse-click-352734.mp3');sound.currentTime=0;sound.play();
 });
 modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');});
 saveBtn.addEventListener('click',()=>{
@@ -242,6 +245,10 @@ setInterval(()=>{
 },100);
 function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements();}
 updateAllUI();
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')){antiCheatUsed=true;buildAchievements();}
+});
 </script>
 </body>
 </html>
