@@ -41,8 +41,9 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 .settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;z-index:9999;overflow:hidden;}
 .settings-content{background:linear-gradient(180deg,#111,#1a1a1a);padding:20px;border-radius:12px;min-width:320px;max-width:90vw;color:#fff;text-align:center;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:95vh;}
 .achievements{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:500px;padding-right:8px;}
-.achievement{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:10px;cursor:pointer;position:relative;white-space:nowrap;}
+.achievement{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:10px;cursor:pointer;position:relative;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;}
 .achievement.locked::after{content:"?";position:absolute;top:0;right:4px;font-weight:900;}
+.ach-btn{padding:4px 8px;background:#FFD54D;border:none;border-radius:6px;cursor:pointer;font-weight:700;}
 .notify{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);padding:10px 18px;border-radius:12px;color:#000;font-weight:800;opacity:0;transition:opacity 0.4s ease;z-index:9999;}
 .gold-cookie{position:absolute;width:64px;height:auto;z-index:60;pointer-events:none;animation:goldRotate 5s linear infinite;}
 @keyframes goldRotate{0%{transform:rotate(0deg) translateX(-100vw);}100%{transform:rotate(360deg) translateX(100vw);}}
@@ -96,8 +97,8 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 <div class="notify" id="notifyBox"></div>
 
 <script>
-let cookies=0,cps=0,playerName='Defult factory',buyMode=true,lastClick=Date.now();
-let goldActive=false,goldEnd=0,goldCPSMultiplier=2,clicksCount=0,antiCheatUsed=false;
+let cookies=0,cps=0,playerName='Defult factory',buyMode=true,lastClick=Date.now(),clickCount=0,antiClickTimeout=0,cheatDetected=false;
+let goldActive=false,goldEnd=0,goldCPSMultiplier=2;
 const cookieEl=document.getElementById('cookie');
 const statsCookies=document.getElementById('cookiesCount');
 const statsCPS=document.getElementById('cpsCount');
@@ -119,7 +120,7 @@ const upgrades=[
 {id:'cursor',name:'Cursor',image:'IMG_0775.png',baseCost:15,baseCPS:0.1,count:0,unlock:0},
 {id:'grandma',name:'Grandma',image:'IMG_0772.jpeg',baseCost:100,baseCPS:1,count:0,unlock:0},
 {id:'farm',name:'Farm',image:'IMG_0774.jpeg',baseCost:500,baseCPS:8,count:0,unlock:500},
-{id:'mine',name:'IMG_0776',name:'Mine',baseCost:2000,baseCPS:47,count:0,unlock:2000},
+{id:'mine',name:'Mine',image:'IMG_0776.jpeg',baseCost:2000,baseCPS:47,count:0,unlock:2000},
 {id:'factory',name:'Factory',image:'IMG_0777.jpeg',baseCost:10000,baseCPS:260,count:0,unlock:10000},
 {id:'bank',name:'Bank',image:'IMG_0779.jpeg',baseCost:140000,baseCPS:1400,count:0,unlock:140000},
 {id:'temple',name:'Temple',image:'IMG_0780.jpeg',baseCost:2000000,baseCPS:7800,count:0,unlock:2000000},
@@ -131,42 +132,27 @@ const upgrades=[
 ];
 
 const achievements=[
-  {name:'First Click',desc:'Wow, you actually clicked once. Amazing.',cond:()=>cookies>=1,unlocked:false},
-  {name:'50 Clicks',desc:'50 clicks! Are your fingers okay?',cond:()=>cookies>=50,unlocked:false},
-  {name:'Are you lazy?',desc:'You didn’t click for 5 whole minutes. Congrats, lazybones.',cond:()=>Date.now()-lastClick>=300000,unlocked:false},
-  {name:'WTF are you AFK?',desc:'35 minutes AFK? That’s commitment… or stupidity.',cond:()=>Date.now()-lastClick>=2100000,unlocked:false},
-  {name:'Weird Granny Addiction',desc:'Why do you have 25,000 grandmas? Do you even sleep?',cond:()=>upgrades.find(u=>u.id=='grandma').count>=25000,unlocked:false},
-  {name:'AntiCheat',desc:'Cheated using console. We see you, sneaky bastard.',cond:()=>antiCheatUsed,unlocked:false},
-  {name:'Click Maniac',desc:'500 clicks. Your mouse hates you now.',cond:()=>cookies>=500,unlocked:false},
-  {name:'Cookie Collector',desc:'Own 50 upgrades combined. Are you hoarding or obsessed?',cond:()=>upgrades.reduce((a,b)=>a+b.count,0)>=50,unlocked:false},
-  {name:'Time Flies',desc:'Played for 1 hour straight. Get a life.',cond:()=>Date.now()-gameStart>=3600000,unlocked:false},
-  {name:'Cookie Monster',desc:'10,000 clicks. Is your mouse melting yet?',cond:()=>cookies>=10000,unlocked:false},
-  {name:'Grandma Slayer',desc:'Own 100 grandmas. Kill them softly.',cond:()=>upgrades.find(u=>u.id=='grandma').count>=100,unlocked:false},
-  {name:'Factory Overload',desc:'50 factories. Smells like corporate greed.',cond:()=>upgrades.find(u=>u.id=='factory').count>=50,unlocked:false},
-  {name:'Wizard Master',desc:'20 wizard towers. Hogwarts called, they want their budget back.',cond:()=>upgrades.find(u=>u.id=='wizard').count>=20,unlocked:false},
-  {name:'Temple Guru',desc:'10 temples. Pray to RNGesus.',cond:()=>upgrades.find(u=>u.id=='temple').count>=10,unlocked:false},
-  {name:'Ultimate Troll',desc:'Own 5 TrollPedia. Troll level: Expert.',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=5,unlocked:false},
-  {name:'Basement Legend',desc:'3 creepy basement dwellers. Do you even leave your house?',cond:()=>upgrades.find(u=>u.id=='basement').count>=3,unlocked:false},
-  {name:'Nuclear Tycoon',desc:'Own 2 nuclear bombs. Apocalypse is near.',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=2,unlocked:false},
-  {name:'Sugar King',desc:'10 sugar upgrades. Diabetes incoming.',cond:()=>upgrades.find(u=>u.id=='sugar').count>=10,unlocked:false},
-  {name:'Extra Clicker',desc:'1,000 clicks. Finger cramps? Just wait.',cond:()=>cookies>=1000,unlocked:false},
-  {name:'Cookie Tycoon',desc:'Half a million cookies. Sweet, sweet success.',cond:()=>cookies>=500000,unlocked:false},
-  {name:'Supreme AFK',desc:'AFK for 2 hours. Hope you’re still alive.',cond:()=>Date.now()-lastClick>=7200000,unlocked:false},
-  {name:'Lazy Overlord',desc:'AFK for 4 hours. Professional procrastinator.',cond:()=>Date.now()-lastClick>=14400000,unlocked:false},
-  {name:'Clickaholic',desc:'10,000 clicks. Mouse insurance required.',cond:()=>cookies>=10000,unlocked:false},
-  {name:'Grandma Hoarder',desc:'50,000 grandmas. Send help.',cond:()=>upgrades.find(u=>u.id=='grandma').count>=50000,unlocked:false},
-  {name:'Farm Frenzy',desc:'100 farms. You smell like dirt now.',cond:()=>upgrades.find(u=>u.id=='farm').count>=100,unlocked:false},
-  {name:'Mine Maniac',desc:'50 mines. Mining simulator pro.',cond:()=>upgrades.find(u=>u.id=='mine').count>=50,unlocked:false},
-  {name:'Bankrupt?',desc:'Hit negative cookies. Nice going.',cond:()=>cookies<0,unlocked:false},
-  {name:'Music Hater',desc:'Muted music. Rebel.',cond:()=>music.muted,unlocked:false},
-  {name:'Gold Hoarder',desc:'Collected 10 gold cookies. Bling bling.',cond:()=>goldCollected>=10,unlocked:false},
-  {name:'Cookie God',desc:'1,000,000 cookies. Worship me.',cond:()=>cookies>=1000000,unlocked:false},
-  {name:'Overachiever',desc:'All upgrades maxed. Are you insane?',cond:()=>upgrades.every(u=>u.count>=9999),unlocked:false},
-  {name:'AFK King',desc:'No activity for 8 hours. Congratulations, sleep deprived.',cond:()=>Date.now()-lastClick>=28800000,unlocked:false},
-  {name:'Speed Demon',desc:'500 CPS. You cheat, don’t lie.',cond:()=>cps>=500,unlocked:false},
-  {name:'Troll Supreme',desc:'Own all TrollPedia upgrades. You troll hard.',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=upgrades.find(u=>u.id=='trollpedia').max||false,unlocked:false},
-  {name:'Cookie Psychopath',desc:'Clicked 50,000 times. Finger amputations imminent.',cond:()=>cookies>=50000,unlocked:false},
-  {name:'Gold Cookie Maniac',desc:'Caught 50 gold cookies. Bling overload.',cond:()=>goldCollected>=50,unlocked:false},
+{name:'First Click',desc:'Click one time',cond:()=>cookies>=1,unlocked:false},
+{name:'50 Clicks',desc:'You got 50 clicks I am proud',cond:()=>cookies>=50,unlocked:false},
+{name:'Are you lazy?',desc:'Not click for 5 minutes',cond:()=>Date.now()-lastClick>=300000,unlocked:false},
+{name:'WTF are you AFK?',desc:'Wow you are afk or just really lazy for 35 minutes',cond:()=>Date.now()-lastClick>=2100000,unlocked:false},
+{name:'Weird Granny Addiction',desc:'Do you have something with grandmas AND WHY DO YOU HAVE 25000 OF THEM YOU SICKO',cond:()=>upgrades.find(u=>u.id=='grandma').count>=25000,unlocked:false},
+{name:'Anti-Cheat Cheater',desc:'Used console to cheat',cond:()=>cheatDetected,unlocked:false},
+{name:'Finger Workout',desc:'Your fingers are more ripped than your biceps',cond:()=>cookies>=500,unlocked:false},
+{name:'Cookie Monster',desc:'You are slowly becoming a blue furry freak',cond:()=>cookies>=1000,unlocked:false},
+{name:'Lazy Sloth',desc:'You sit there and do NOTHING for 10 minutes',cond:()=>Date.now()-lastClick>=600000,unlocked:false},
+{name:'Greedy Goblin',desc:'Bought so many upgrades you forgot to click',cond:()=>upgrades.reduce((a,u)=>a+u.count,0)>=100,unlocked:false},
+{name:'Grandma Hoarder',desc:'You love grannies way too much',cond:()=>upgrades.find(u=>u.id=='grandma').count>=500,unlocked:false},
+{name:'Sugar Overload',desc:'You literally have too much sugar in your blood',cond:()=>cookies>=100000,unlocked:false},
+{name:'AFK King',desc:'You achieved AFK greatness for 1 hour',cond:()=>Date.now()-lastClick>=3600000,unlocked:false},
+{name:'Troll Master',desc:'Bought TrollPedia just to annoy everyone',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=1,unlocked:false},
+{name:'Basement Dweller',desc:'Your granny’s basement is a second home',cond:()=>upgrades.find(u=>u.id=='basement').count>=1,unlocked:false},
+{name:'Nuclear Enthusiast',desc:'Legalize Nuclear Bombs because why not?',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=1,unlocked:false},
+{name:'Sugar Daddy',desc:'We got sugar and you got too many cookies',cond:()=>upgrades.find(u=>u.id=='sugar').count>=1,unlocked:false},
+{name:'Cookie Overlord',desc:'You own more cookies than a bakery',cond:()=>cookies>=1000000,unlocked:false},
+{name:'Click Addict',desc:'You clicked more times than you slept',cond:()=>clickCount>=1000,unlocked:false},
+{name:'Finger Cramp',desc:'Your fingers are now permanently stuck in click position',cond:()=>clickCount>=5000,unlocked:false},
+{name:'Lazy Genius',desc:'AFK and still making more cookies than everyone else',cond:()=>cookies>=500000,unlocked:false}
 ];
 
 
@@ -198,21 +184,30 @@ function buildUpgradesUI(){
     upgradeScroll.appendChild(div);
   });
 }
+
 function buildAchievements(){
   achievementsList.innerHTML='';
-  achievements.forEach(a=>{
+  achievements.forEach((a,i)=>{
     if(a.cond()&&!a.unlocked){a.unlocked=true;showNotify('Achievement Unlocked: '+a.name);}
     const div=document.createElement('div');div.classList.add('achievement');if(!a.unlocked)div.classList.add('locked');
     div.textContent=a.name;
-    div.addEventListener('click',()=>{if(a.unlocked)alert(a.name+'\n'+a.desc);});
+    const btn=document.createElement('button');btn.classList.add('ach-btn');btn.textContent='Info';
+    btn.addEventListener('click',(e)=>{e.stopPropagation();if(a.unlocked){alert(a.name+'\n'+a.desc);} else {alert(a.name+' is locked!');}});
+    div.appendChild(btn);
     achievementsList.appendChild(div);
   });
 }
+
 function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150);}
+
 cookieEl.addEventListener('click',()=>{
-  cookies++;lastClick=Date.now();clicksCount++;updateCounters();showClickEffect();
-  const sound=new Audio('computer-mouse-click-352734.mp3');sound.currentTime=0;sound.play();
+  let now=Date.now();
+  if(now-antiClickTimeout<50)return;
+  antiClickTimeout=now;
+  cookies++;clickCount++;lastClick=now;updateCounters();showClickEffect();
+  let soundClone=clickSound.cloneNode();soundClone.play();
 });
+
 modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');});
 saveBtn.addEventListener('click',()=>{
   const saveData={c:cookies,u:upgrades.map(u=>u.count),n:playerName,lastClick:lastClick};
@@ -243,12 +238,10 @@ setInterval(()=>{
   let gain=cps/10;if(goldActive)gain*=goldCPSMultiplier;
   cookies+=gain;updateCounters();buildAchievements();
 },100);
+
 function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements();}
 updateAllUI();
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')){antiCheatUsed=true;buildAchievements();}
-});
+music.play().catch(()=>{}); 
 </script>
 </body>
 </html>
