@@ -37,9 +37,9 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 .settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;z-index:9999;overflow:hidden;}
 .settings-content{background:linear-gradient(180deg,#111,#1a1a1a);padding:20px;border-radius:12px;min-width:320px;max-width:90vw;color:#fff;text-align:center;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:95vh;}
 .achievements{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:500px;padding-right:8px;}
-.achievement{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:10px;cursor:pointer;position:relative;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;}
+.achievement{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:10px;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;position:relative;}
 .achievement.locked::after{content:"?";position:absolute;top:0;right:4px;font-weight:900;}
-.ach-btn{padding:4px 8px;background:#FFD54D;border:none;border-radius:6px;cursor:pointer;font-weight:700;}
+.ach-btn{padding:4px 8px;background:#FFD54D;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-left:6px;}
 .notify{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);padding:10px 18px;border-radius:12px;color:#000;font-weight:800;opacity:0;transition:opacity 0.4s ease;z-index:9999;}
 .gold-cookie{position:absolute;width:64px;height:auto;z-index:60;pointer-events:none;animation:goldRotate 5s linear infinite;}
 @keyframes goldRotate{0%{transform:rotate(0deg) translateX(-100vw);}100%{transform:rotate(360deg) translateX(100vw);}}
@@ -165,42 +165,31 @@ function buildUpgradesUI(){
     const meta=document.createElement('div');meta.classList.add('meta');
     const priceEl=document.createElement('div');priceEl.classList.add('price');priceEl.textContent='Price: '+calcPrice(u);
     const ownedEl=document.createElement('div');ownedEl.classList.add('owned');ownedEl.textContent='Owned: '+u.count;
-    const cpsEl=document.createElement('div');cpsEl.classList.add('cps-total');cpsEl.textContent='+ '+(u.baseCPS*u.count).toFixed(1)+' CPS';
+    const cpsEl=document.createElement('div');cpsEl.classList.add('cps-total');cpsEl.textContent='Total CPS: '+(u.baseCPS*u.count).toFixed(1);
     meta.appendChild(priceEl);meta.appendChild(ownedEl);meta.appendChild(cpsEl);
-    info.appendChild(title);info.appendChild(meta);div.appendChild(img);div.appendChild(info);
+    info.appendChild(title);info.appendChild(meta);
+    div.appendChild(img);div.appendChild(info);
     div.addEventListener('click',()=>{
-      if(!buyMode){if(u.count>0){u.count--;cookies+=Math.floor(calcPrice(u)/2);showNotify('Sold '+u.name);}}
-      else{if(cookies>=calcPrice(u)){cookies-=calcPrice(u);u.count++;showNotify('Bought '+u.name);}}
-      updateAllUI();
+      if(!buyMode){if(u.count>0){u.count--;updateAllUI();}} else {if(cookies>=calcPrice(u)){cookies-=calcPrice(u);u.count++;updateAllUI();}}
     });
-    div.addEventListener('mouseenter',()=>{div.style.transform='scale(1.05)';div.style.boxShadow='0 10px 25px rgba(255,255,255,0.35)';})
-    div.addEventListener('mouseleave',()=>{div.style.transform='scale(1)';div.style.boxShadow='none';})
     upgradeScroll.appendChild(div);
   });
 }
-
 function buildAchievements(){
   achievementsList.innerHTML='';
-  achievements.forEach((a,i)=>{
-    if(a.cond()&&!a.unlocked){a.unlocked=true;showNotify('Achievement Unlocked: '+a.name);}
+  achievements.forEach(a=>{
+    if(!a.unlocked && a.cond()){a.unlocked=true;showNotify('Achievement unlocked: '+a.name);}
     const div=document.createElement('div');div.classList.add('achievement');if(!a.unlocked)div.classList.add('locked');
     div.textContent=a.name;
-    div.addEventListener('click',()=>{
-      if(a.unlocked){alert(a.name+'\n'+a.desc);} else {alert(a.name+' is locked!');}
-    });
+    const btn=document.createElement('button');btn.classList.add('ach-btn');btn.textContent='View';btn.addEventListener('click',()=>{if(a.unlocked){alert(a.name+'\n'+a.desc);} else {alert(a.name+' is locked!');}});
+    div.appendChild(btn);
     achievementsList.appendChild(div);
   });
 }
-
 function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150);}
 cookieEl.addEventListener('click',()=>{
-  let now=Date.now();
-  if(now-antiClickTimeout<50)return;
-  antiClickTimeout=now;
-  cookies++;clickCount++;lastClick=now;updateCounters();showClickEffect();
-  clickSound.cloneNode().play();
+  let now=Date.now();if(now-antiClickTimeout<50)return;antiClickTimeout=now;cookies++;clickCount++;lastClick=now;updateCounters();showClickEffect();clickSound.cloneNode().play();
 });
-
 modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');});
 saveBtn.addEventListener('click',()=>{
   const saveData={c:cookies,u:upgrades.map(u=>u.count),n:playerName,lastClick:lastClick};
@@ -213,13 +202,12 @@ loadBtn.addEventListener('click',()=>{
     reader.readAsText(file);
   };input.click();
 });
-openSettings.addEventListener('click',()=>{settingsModal.style.display='flex';});
+openSettings.addEventListener('click',()=>{settingsModal.style.display='flex';buildAchievements();});
 closeSettings.addEventListener('click',()=>{settingsModal.style.display='none';});
 playerNameDisplay.addEventListener('click',()=>{
   const newName=prompt('Enter your name:',playerName.replace(' factory',''));
   if(newName!==null && newName.trim()!==''){playerName=newName.trim()+' factory';playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}
 });
-
 function spawnGoldCookie(){
   if(goldActive)return;
   goldActive=true;goldEnd=Date.now()+60000;
@@ -227,16 +215,14 @@ function spawnGoldCookie(){
   document.body.appendChild(gold);
   setTimeout(()=>{gold.remove();goldActive=false;updateAllUI();},60000);
 }
-
 setInterval(()=>{
   let diff=(Date.now()-lastClick)/1000;
   let gain=cps/10;if(goldActive)gain*=goldCPSMultiplier;
   cookies+=gain;updateCounters();buildAchievements();
 },100);
-
 function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements();}
 updateAllUI();
-music.play().catch(()=>{}); 
+music.play().catch(()=>{});
 </script>
 </body>
 </html>
