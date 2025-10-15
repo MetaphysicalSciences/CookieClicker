@@ -40,13 +40,12 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 .bottom-note{font-size:12px;opacity:0.85;text-align:center}
 .settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;z-index:9999;overflow:hidden;}
 .settings-content{background:linear-gradient(180deg,#111,#1a1a1a);padding:20px;border-radius:12px;min-width:320px;max-width:90vw;color:#fff;text-align:center;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:95vh;}
-.settings-content label{display:flex;justify-content:space-between;align-items:center;margin:6px 0;font-weight:600;}
-.settings-content input[type="range"]{width:60%;}
-.settings-content button{padding:8px 12px;border-radius:8px;border:none;background:#fff;color:#111;font-weight:700;cursor:pointer;}
-.achievements{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:400px;padding-right:8px;}
+.achievements{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:500px;padding-right:8px;}
 .achievement{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:10px;cursor:pointer;position:relative;white-space:nowrap;}
 .achievement.locked::after{content:"?";position:absolute;top:0;right:4px;font-weight:900;}
 .notify{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);padding:10px 18px;border-radius:12px;color:#000;font-weight:800;opacity:0;transition:opacity 0.4s ease;z-index:9999;}
+.gold-cookie{position:absolute;width:64px;height:auto;z-index:60;pointer-events:none;animation:goldRotate 5s linear infinite;}
+@keyframes goldRotate{0%{transform:rotate(0deg) translateX(-100vw);}100%{transform:rotate(360deg) translateX(100vw);}}
 @media (max-width:900px){
   .container{flex-direction:column;padding:10px;align-items:stretch;}
   .cookie-area{min-width:unset;height:60vh;}
@@ -59,7 +58,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 <div class="header">
   <div class="title">Cookie Clicker Scuffed</div>
   <div id="playerNameDisplay" class="player-name">Defult factory</div>
-  <button id="openSettings" style="margin-top:6px;padding:6px 12px;border:none;border-radius:8px;background:#FFD54D;font-weight:800;cursor:pointer;">Settings</button>
+  <button id="openSettings" style="margin-top:6px;padding:6px 12px;border:none;border-radius:8px;background:#FFD54D;font-weight:800;cursor:pointer;">Achievements</button>
 </div>
 <div class="container">
   <div class="cookie-area">
@@ -87,8 +86,6 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 <div id="settingsModal" class="settings-modal">
   <div class="settings-content">
     <div style="font-weight:900;font-size:clamp(16px,3vmin,24px);" id="settingsPlayerName">Player: Defult factory</div>
-    <label>Click Sound Volume <input type="range" id="clickVol" min="0" max="1" step="0.01"></label>
-    <label>Music Volume <input type="range" id="musicVol" min="0" max="1" step="0.01"></label>
     <div class="achievements" id="achievementsList"></div>
     <button id="closeSettings">Close</button>
   </div>
@@ -96,11 +93,9 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
 
 <div class="notify" id="notifyBox"></div>
 
-<audio id="bgMusic" src="18038_sck.mp3" loop preload="auto"></audio>
-<audio id="clickAudio" src="computer-mouse-click-352734.mp3" preload="auto"></audio>
-
 <script>
 let cookies=0,cps=0,playerName='Defult factory',buyMode=true,lastClick=Date.now();
+let goldActive=false,goldEnd=0,goldCPSMultiplier=2;
 const cookieEl=document.getElementById('cookie');
 const statsCookies=document.getElementById('cookiesCount');
 const statsCPS=document.getElementById('cpsCount');
@@ -113,51 +108,64 @@ const settingsModal=document.getElementById('settingsModal');
 const openSettings=document.getElementById('openSettings');
 const closeSettings=document.getElementById('closeSettings');
 const settingsPlayerName=document.getElementById('settingsPlayerName');
-const clickVolSlider=document.getElementById('clickVol');
-const musicVolSlider=document.getElementById('musicVol');
 const achievementsList=document.getElementById('achievementsList');
 const notifyBox=document.getElementById('notifyBox');
-const bgMusic=document.getElementById('bgMusic');
-const clickAudio=document.getElementById('clickAudio');
 
 const upgrades=[
 {id:'cursor',name:'Cursor',image:'IMG_0775.png',baseCost:15,baseCPS:0.1,count:0,unlock:0},
 {id:'grandma',name:'Grandma',image:'IMG_0772.jpeg',baseCost:100,baseCPS:1,count:0,unlock:0},
-{id:'farm',name:'Farm',image:'IMG_0774.jpeg',baseCost:500,baseCPS:8,count:0,unlock:0},
-{id:'mine',name:'Mine',image:'IMG_0776.jpeg',baseCost:2000,baseCPS:47,count:0,unlock:0},
-{id:'factory',name:'Factory',image:'IMG_0777.jpeg',baseCost:10000,baseCPS:260,count:0,unlock:0},
-{id:'bank',name:'Bank',image:'IMG_0779.jpeg',baseCost:50000,baseCPS:1400,count:0,unlock:5000},
-{id:'temple',name:'Temple',image:'IMG_0780.jpeg',baseCost:200000,baseCPS:7800,count:0,unlock:20000},
-{id:'wizard',name:'Wizard Tower',image:'IMG_0781.jpeg',baseCost:800000,baseCPS:44000,count:0,unlock:80000},
-{id:'trollpedia',name:'TrollPedia',image:'TrollPedia.png',baseCost:1500000,baseCPS:90000,count:0,unlock:500000},
-{id:'basement',name:'TheGuyInYourGrannysBasement',image:'TheGuyInYourGrannysBasement.png',baseCost:5000000,baseCPS:500000,count:0,unlock:1000000}];
+{id:'farm',name:'Farm',image:'IMG_0774.jpeg',baseCost:500,baseCPS:8,count:0,unlock:500},
+{id:'mine',name:'Mine',image:'IMG_0776.jpeg',baseCost:2000,baseCPS:47,count:0,unlock:2000},
+{id:'factory',name:'Factory',image:'IMG_0777.jpeg',baseCost:10000,baseCPS:260,count:0,unlock:10000},
+{id:'bank',name:'Bank',image:'IMG_0779.jpeg',baseCost:140000,baseCPS:1400,count:0,unlock:140000},
+{id:'temple',name:'Temple',image:'IMG_0780.jpeg',baseCost:2000000,baseCPS:7800,count:0,unlock:2000000},
+{id:'wizard',name:'Wizard Tower',image:'IMG_0781.jpeg',baseCost:33000000,baseCPS:44000,count:0,unlock:33000000},
+{id:'trollpedia',name:'TrollPedia',image:'TrollPedia.png',baseCost:560000000,baseCPS:260000,count:0,unlock:560000000},
+{id:'basement',name:'TheGuyInYourGrannysBasementV2',image:'TheGuyInYourGrannysBasementV2.png',baseCost:1000000000,baseCPS:1500000,count:0,unlock:1000000000},
+{id:'nuclear',name:'Legalize Nuclear Bombs',image:'legalize nuclear bombs.jpg',baseCost:5000000000,baseCPS:10000000,count:0,unlock:5000000000},
+{id:'sugar',name:'We Got Sugar',image:'we got surgar.jpg',baseCost:10000000000,baseCPS:25000000,count:0,unlock:10000000000}
+];
 
 const achievements=[
 {name:'First Click',desc:'Click one time',cond:()=>cookies>=1,unlocked:false},
-{name:'50 Clicks',desc:'You got 50 clicks, I am proud',cond:()=>cookies>=50,unlocked:false},
+{name:'50 Clicks',desc:'You got 50 clicks I am proud',cond:()=>cookies>=50,unlocked:false},
 {name:'Are you lazy?',desc:'Not click for 5 minutes',cond:()=>Date.now()-lastClick>=300000,unlocked:false},
-{name:'WTF are you AFK?',desc:'Wow you are afk or just really lazy for not clicking 35 minutes',cond:()=>Date.now()-lastClick>=2100000,unlocked:false},
+{name:'WTF are you AFK?',desc:'Wow you are afk or just really lazy for 35 minutes',cond:()=>Date.now()-lastClick>=2100000,unlocked:false},
 {name:'Weird Granny Addiction',desc:'Do you have something with grandmas AND WHY DO YOU HAVE 25000 OF THEM YOU SICKO',cond:()=>upgrades.find(u=>u.id=='grandma').count>=25000,unlocked:false},
-{name:'Big Spender',desc:'Spend over 1,000,000 cookies',cond:()=>cookies>=1000000,unlocked:false},
-{name:'Cookie Monster',desc:'Own 100 cursors',cond:()=>upgrades.find(u=>u.id=='cursor').count>=100,unlocked:false},
-{name:'Farm Fanatic',desc:'Own 50 farms',cond:()=>upgrades.find(u=>u.id=='farm').count>=50,unlocked:false},
-{name:'Mine Madness',desc:'Own 20 mines',cond:()=>upgrades.find(u=>u.id=='mine').count>=20,unlocked:false},
-{name:'Factory Frenzy',desc:'Own 10 factories',cond:()=>upgrades.find(u=>u.id=='factory').count>=10,unlocked:false},
-{name:'Temple Titan',desc:'Own 5 temples',cond:()=>upgrades.find(u=>u.id=='temple').count>=5,unlocked:false},
-{name:'Wizard Supreme',desc:'Own 3 wizard towers',cond:()=>upgrades.find(u=>u.id=='wizard').count>=3,unlocked:false},
-{name:'Troll Master',desc:'Own 1 TrollPedia',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=1,unlocked:false},
-{name:'Basement Dweller',desc:'Own 1 TheGuyInYourGrannysBasement',cond:()=>upgrades.find(u=>u.id=='basement').count>=1,unlocked:false},
-{name:'Cookie Hoarder',desc:'Accumulate 1,000,000 cookies',cond:()=>cookies>=1000000,unlocked:false},
-{name:'Legendary Clicker',desc:'Click 10,000 times',cond:()=>cookies>=10000,unlocked:false},
-{name:'Idle God',desc:'Stay idle for 1 hour',cond:()=>Date.now()-lastClick>=3600000,unlocked:false},
-{name:'Mega Factory',desc:'Own 20 factories',cond:()=>upgrades.find(u=>u.id=='factory').count>=20,unlocked:false},
-{name:'Grandma Collector',desc:'Own 1000 grandmas',cond:()=>upgrades.find(u=>u.id=='grandma').count>=1000,unlocked:false},
-{name:'Farm Empire',desc:'Own 500 farms',cond:()=>upgrades.find(u=>u.id=='farm').count>=500,unlocked:false}];
+{name:'Million Cookies',desc:'You reached 1,000,000 cookies',cond:()=>cookies>=1000000,unlocked:false},
+{name:'Baker\'s Dozen',desc:'Owned 13 cursors',cond:()=>upgrades.find(u=>u.id=='cursor').count>=13,unlocked:false},
+{name:'Farm Frenzy',desc:'Owned 10 farms',cond:()=>upgrades.find(u=>u.id=='farm').count>=10,unlocked:false},
+{name:'Mining Master',desc:'Owned 5 mines',cond:()=>upgrades.find(u=>u.id=='mine').count>=5,unlocked:false},
+{name:'Factory King',desc:'Owned 3 factories',cond:()=>upgrades.find(u=>u.id=='factory').count>=3,unlocked:false},
+{name:'Temple Tycoon',desc:'Owned 2 temples',cond:()=>upgrades.find(u=>u.id=='temple').count>=2,unlocked:false},
+{name:'Wizard Lord',desc:'Owned 1 wizard tower',cond:()=>upgrades.find(u=>u.id=='wizard').count>=1,unlocked:false},
+{name:'Troll Master',desc:'Owned 1 TrollPedia',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=1,unlocked:false},
+{name:'Basement Overlord',desc:'Owned 1 TheGuyInYourGrannysBasementV2',cond:()=>upgrades.find(u=>u.id=='basement').count>=1,unlocked:false},
+{name:'Nuclear Fan',desc:'Owned 1 Legalize Nuclear Bombs',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=1,unlocked:false},
+{name:'Sugar Rush',desc:'Owned 1 We Got Sugar',cond:()=>upgrades.find(u=>u.id=='sugar').count>=1,unlocked:false},
+{name:'Cookie God',desc:'Reach 100,000,000 cookies',cond:()=>cookies>=100000000,unlocked:false},
+{name:'AFK Millionaire',desc:'Earn 1,000,000 cookies AFK',cond:()=>cookies>=1000000&&Date.now()-lastClick>=600000,unlocked:false},
+{name:'Golden Time',desc:'Activate golden cookie',cond:()=>goldActive,unlocked:false},
+{name:'Ultimate Player',desc:'Own all upgrades at least once',cond:()=>upgrades.every(u=>u.count>=1),unlocked:false},
+{name:'Click Maniac',desc:'Click 500 times',cond:()=>cookies>=500,unlocked:false},
+{name:'Cookie Collector',desc:'Own 50 upgrades combined',cond:()=>upgrades.reduce((a,b)=>a+b.count,0)>=50,unlocked:false},
+{name:'Time Flies',desc:'Play for 1 hour',cond:()=>Date.now()-gameStart>=3600000,unlocked:false},
+{name:'Cookie Monster',desc:'Click 10,000 cookies',cond:()=>cookies>=10000,unlocked:false},
+{name:'Grandma Slayer',desc:'Own 100 grandmas',cond:()=>upgrades.find(u=>u.id=='grandma').count>=100,unlocked:false},
+{name:'Factory Overload',desc:'Own 50 factories',cond:()=>upgrades.find(u=>u.id=='factory').count>=50,unlocked:false},
+{name:'Wizard Master',desc:'Own 20 wizard towers',cond:()=>upgrades.find(u=>u.id=='wizard').count>=20,unlocked:false},
+{name:'Temple Guru',desc:'Own 10 temples',cond:()=>upgrades.find(u=>u.id=='temple').count>=10,unlocked:false},
+{name:'Ultimate Troll',desc:'Own 5 TrollPedia',cond:()=>upgrades.find(u=>u.id=='trollpedia').count>=5,unlocked:false},
+{name:'Basement Legend',desc:'Own 3 TheGuyInYourGrannysBasementV2',cond:()=>upgrades.find(u=>u.id=='basement').count>=3,unlocked:false},
+{name:'Nuclear Tycoon',desc:'Own 2 Legalize Nuclear Bombs',cond:()=>upgrades.find(u=>u.id=='nuclear').count>=2,unlocked:false},
+{name:'Sugar King',desc:'Own 10 We Got Sugar',cond:()=>upgrades.find(u=>u.id=='sugar').count>=10,unlocked:false}];
 
-function showNotify(txt){notifyBox.textContent=txt;notifyBox.style.opacity=1;setTimeout(()=>notifyBox.style.opacity=0,2000);}
-function calcPrice(u){return Math.floor(u.baseCost * Math.pow(1.15, u.count));}
-function computeCPS(){cps=upgrades.reduce((s,u)=>s+u.count*u.baseCPS,0);statsCPS.textContent='CPS: '+Number(cps.toFixed(1));}
-function updateCounters(){statsCookies.textContent='Cookies: '+Math.floor(cookies);computeCPS();}
+const gameStart=Date.now();
+
+function calcPrice(u){return Math.floor(u.baseCost*Math.pow(1.15,u.count));}
+function computeCPS(){cps=0;upgrades.forEach(u=>{cps+=u.baseCPS*u.count});if(goldActive)cps*=goldCPSMultiplier;}
+function updateCounters(){statsCookies.textContent='Cookies: '+Math.floor(cookies);statsCPS.textContent='CPS: '+cps.toFixed(1);}
+function showNotify(text){notifyBox.textContent=text;notifyBox.style.opacity='1';setTimeout(()=>{notifyBox.style.opacity='0'},2000);}
 function buildUpgradesUI(){
   upgradeScroll.innerHTML='';
   upgrades.forEach(u=>{
@@ -170,10 +178,9 @@ function buildUpgradesUI(){
     const ownedEl=document.createElement('div');ownedEl.classList.add('owned');ownedEl.textContent='Owned: '+u.count;
     const cpsEl=document.createElement('div');cpsEl.classList.add('cps-total');cpsEl.textContent='+ '+(u.baseCPS*u.count).toFixed(1)+' CPS';
     meta.appendChild(priceEl);meta.appendChild(ownedEl);meta.appendChild(cpsEl);
-    info.appendChild(title);info.appendChild(meta);
-    div.appendChild(img);div.appendChild(info);
+    info.appendChild(title);info.appendChild(meta);div.appendChild(img);div.appendChild(info);
     div.addEventListener('click',()=>{
-      if(!buyMode){if(u.count>0){u.count--;cookies+=calcPrice(u)/2;showNotify('Sold '+u.name);}}
+      if(!buyMode){if(u.count>0){u.count--;cookies+=Math.floor(calcPrice(u)/2);showNotify('Sold '+u.name);}}
       else{if(cookies>=calcPrice(u)){cookies-=calcPrice(u);u.count++;showNotify('Bought '+u.name);}}
       updateAllUI();
     });
@@ -182,7 +189,6 @@ function buildUpgradesUI(){
     upgradeScroll.appendChild(div);
   });
 }
-function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements();}
 function buildAchievements(){
   achievementsList.innerHTML='';
   achievements.forEach(a=>{
@@ -193,30 +199,39 @@ function buildAchievements(){
     achievementsList.appendChild(div);
   });
 }
-function showClickEffect(){const scale=Math.random()*0.15+1.1;cookieEl.style.transform=`scale(${scale}) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>cookieEl.style.transform='scale(1) rotate(0)',150);}
-cookieEl.addEventListener('click',()=>{cookies++;lastClick=Date.now();updateCounters();clickAudio.currentTime=0;clickAudio.play().catch(()=>{});showClickEffect();});
+function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150);}
+cookieEl.addEventListener('click',()=>{cookies++;lastClick=Date.now();updateCounters();showClickEffect();});
 modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');});
 saveBtn.addEventListener('click',()=>{
-  const saveData={c:cookies,u:upgrades.map(u=>u.count),n:playerName};
-  const blob=new Blob([btoa(JSON.stringify(saveData))],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CookieScuffedSave.txt';a.click();
+  const saveData={c:cookies,u:upgrades.map(u=>u.count),n:playerName,lastClick:lastClick};
+  const blob=new Blob([JSON.stringify(saveData)],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CookieScuffedSave.txt';a.click();
 });
 loadBtn.addEventListener('click',()=>{
   const input=document.createElement('input');input.type='file';input.accept='.txt';input.onchange=e=>{
     const file=e.target.files[0];const reader=new FileReader();
-    reader.onload=function(ev){try{const data=JSON.parse(atob(ev.target.result));cookies=data.c;upgrades.forEach((u,i)=>{u.count=data.u[i]});playerName=data.n;playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}catch(err){alert('Invalid save file');}updateAllUI();}
+    reader.onload=function(ev){try{const data=JSON.parse(ev.target.result);cookies=data.c;upgrades.forEach((u,i)=>{u.count=data.u[i]});playerName=data.n;lastClick=data.lastClick;playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}catch(err){alert('Invalid save file');}updateAllUI();}
     reader.readAsText(file);
   };input.click();
 });
 openSettings.addEventListener('click',()=>{settingsModal.style.display='flex';});
 closeSettings.addEventListener('click',()=>{settingsModal.style.display='none';});
-clickVolSlider.addEventListener('input',()=>{clickAudio.volume=clickVolSlider.value;});
-musicVolSlider.addEventListener('input',()=>{bgMusic.volume=musicVolSlider.value;});
-clickVolSlider.value=0.5;musicVolSlider.value=0.5;bgMusic.volume=0.5;bgMusic.play().catch(()=>{});
 playerNameDisplay.addEventListener('click',()=>{
   const newName=prompt('Enter your name:',playerName.replace(' factory',''));
   if(newName!==null && newName.trim()!==''){playerName=newName.trim()+' factory';playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}
 });
-setInterval(()=>{cookies+=cps/10;updateCounters();buildAchievements();},100);
+function spawnGoldCookie(){
+  if(goldActive)return;
+  goldActive=true;goldEnd=Date.now()+60000;
+  const gold=document.createElement('img');gold.src='IMG_0778.jpeg';gold.className='gold-cookie';
+  document.body.appendChild(gold);
+  setTimeout(()=>{gold.remove();goldActive=false;updateAllUI();},60000);
+}
+setInterval(()=>{
+  let diff=(Date.now()-lastClick)/1000;
+  let gain=cps/10;if(goldActive)gain*=goldCPSMultiplier;
+  cookies+=gain;updateCounters();buildAchievements();
+},100);
+function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements();}
 updateAllUI();
 </script>
 </body>
