@@ -9,45 +9,48 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;-webkit-user-select:none;user-select:none;}
 html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') center/cover no-repeat;color:#fff;display:flex;flex-direction:column;}
 .header{width:100%;text-align:center;padding:12px 8px;background:rgba(0,0,0,0.3);position:sticky;top:0;z-index:99}
-.title{font-size:clamp(20px,3.6vmin,40px);font-weight:900;text-shadow:0 6px 22px rgba(0,0,0,0.7);}
-.player-name{margin-top:6px;font-size:clamp(12px,2.2vmin,18px);cursor:pointer;text-decoration:underline;color:#fff;opacity:0.95;}
-.container{flex:1;display:flex;gap:2vmin;padding:1.5vmin;align-items:stretch;flex-wrap:wrap;justify-content:center;overflow:hidden;}
-.cookie-area{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-width:320px;min-height:320px;}
-.cookie-wrap{position:relative;display:flex;align-items:center;justify-content:center;}
-#cookie{width:clamp(180px,26vmin,420px);height:auto;cursor:url('IMG_0775.png'),pointer;z-index:30;transition:transform 0.2s ease;}
+.title{font-size:clamp(20px,3.6vmin,40px);font-weight:900;text-shadow:0 6px 22px rgba(0,0,0,0.7)}
+.player-name{margin-top:6px;font-size:clamp(12px,2.2vmin,18px);cursor:pointer;text-decoration:underline;color:#fff;opacity:0.95}
+.container{flex:1;display:flex;gap:2vmin;padding:1.5vmin;align-items:stretch;flex-wrap:wrap;justify-content:center;overflow:hidden}
+.cookie-area{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-width:320px;min-height:320px}
+.cookie-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+#cookie{width:clamp(180px,26vmin,420px);height:auto;cursor:url('IMG_0775.png'),pointer;z-index:30;transition:transform 0.18s ease}
 .stats{position:absolute;top:12px;left:50%;transform:translateX(-50%);text-align:center;padding:8px 14px;border-radius:12px;background:linear-gradient(135deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));backdrop-filter:blur(6px);box-shadow:0 10px 40px rgba(0,0,0,0.6);z-index:50}
 .stats .big{font-size:clamp(16px,3.2vmin,28px);font-weight:800}
 .stats .small{font-size:clamp(11px,1.9vmin,16px);opacity:0.95;margin-top:6px}
-.sidebar{width:clamp(300px,22vw,480px);flex-shrink:0;background:var(--ui-bg);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 48px);overflow:hidden;}
+.sidebar{width:clamp(300px,22vw,480px);flex-shrink:0;background:var(--ui-bg);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 48px);overflow:hidden}
 .top-controls{display:flex;gap:8px;align-items:center;justify-content:space-between}
-.mode-btn{padding:8px 12px;border-radius:8px;border:none;background:#fff;color:#111;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.45);}
+.mode-btn{padding:8px 12px;border-radius:8px;border:none;background:#fff;color:#111;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.45)}
 .save-load{display:flex;gap:8px}
-.save-load button{padding:8px 10px;border-radius:8px;border:none;background:rgba(255,255,255,0.92);cursor:pointer;font-weight:800;}
-.upgrade-scroll{overflow-y:auto;display:flex;flex-direction:column;gap:10px;max-height:calc(100% - 86px);padding-right:8px;}
-.upgrade{display:flex;gap:10px;align-items:center;background:var(--glass);padding:10px;border-radius:10px;min-height:88px;opacity:0.6;cursor:pointer;transition:transform 160ms ease, box-shadow 160ms ease, opacity 160ms;}
+.save-load button{padding:8px 10px;border-radius:8px;border:none;background:rgba(255,255,255,0.92);cursor:pointer;font-weight:800}
+.upgrade-scroll{overflow-y:auto;display:flex;flex-direction:column;gap:10px;max-height:calc(100% - 86px);padding-right:8px}
+.upgrade{display:flex;gap:10px;align-items:center;background:var(--glass);padding:10px;border-radius:10px;min-height:88px;opacity:0.6;cursor:pointer;transition:transform 160ms ease, box-shadow 160ms ease, opacity 160ms}
 .upgrade.unlocked{opacity:1}
-.upgrade img{width:64px;height:auto;border-radius:10px;flex-shrink:0;}
-.upgrade .info{flex:1;display:flex;flex-direction:column;justify-content:center;}
-.upgrade .title{font-weight:800;font-size:clamp(13px,2vmin,16px);}
-.upgrade .meta{font-size:12px;opacity:0.95;margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.upgrade .meta .price{background:rgba(0,0,0,0.35);padding:6px 8px;border-radius:8px;}
-.upgrade .owned{font-weight:800;}
-.upgrade .cps-total{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;}
+.upgrade img{width:64px;height:auto;border-radius:10px;flex-shrink:0}
+.upgrade .info{flex:1;display:flex;flex-direction:column;justify-content:center}
+.upgrade .title{font-weight:800;font-size:clamp(13px,2vmin,16px)}
+.upgrade .meta{font-size:12px;opacity:0.95;margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.upgrade .meta .price{background:rgba(0,0,0,0.35);padding:6px 8px;border-radius:8px}
+.upgrade .owned{font-weight:800}
+.upgrade .cps-total{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px}
 .bottom-note{font-size:12px;opacity:0.85;text-align:center}
-.settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;z-index:9999;overflow:hidden;}
-.settings-content{background:linear-gradient(180deg,#111,#1a1a1a);padding:20px;border-radius:12px;min-width:320px;max-width:90vw;color:#fff;text-align:center;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:95vh;}
-.achievements{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:500px;padding-right:8px;}
-.achievement{background:rgba(255,255,255,0.1);padding:8px 12px;border-radius:10px;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;position:relative;}
-.achievement.locked::after{content:"?";position:absolute;top:0;right:4px;font-weight:900;}
-.ach-btn{padding:4px 8px;background:#FFD54D;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-left:6px;}
-.notify{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);padding:10px 18px;border-radius:12px;color:#000;font-weight:800;opacity:0;transition:opacity 0.4s ease;z-index:9999;}
-.gold-cookie{position:absolute;width:64px;height:auto;z-index:60;pointer-events:none;animation:goldRotate 5s linear infinite;}
-@keyframes goldRotate{0%{transform:rotate(0deg) translateX(-100vw);}100%{transform:rotate(360deg) translateX(100vw);}}
+.settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;z-index:9999;overflow:hidden}
+.settings-content{background:linear-gradient(180deg,#111,#1a1a1a);padding:20px;border-radius:12px;min-width:320px;max-width:90vw;color:#fff;text-align:center;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:95vh}
+.achievements{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:500px;padding-right:8px}
+.achievement{background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;position:relative}
+.achievement.locked::after{content:"?";position:absolute;top:0;right:4px;font-weight:900}
+.ach-btn{padding:8px 10px;background:#FFD54D;border:none;border-radius:8px;cursor:pointer;font-weight:800}
+.ach-view-modal{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#111;padding:18px;border-radius:12px;z-index:10001;max-width:90vw;min-width:260px}
+.ach-view-modal h3{margin-bottom:8px}
+.ach-view-modal p{opacity:0.95}
+.notify{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--accent);padding:10px 18px;border-radius:12px;color:#000;font-weight:800;opacity:0;transition:opacity 0.4s ease;z-index:9999}
+.gold-cookie{position:absolute;width:56px;height:auto;z-index:60;pointer-events:none;animation:goldRotate 5s linear infinite}
+@keyframes goldRotate{0%{transform:rotate(0deg) translateX(-100vw)}100%{transform:rotate(360deg) translateX(100vw)}}
 @media (max-width:900px){
-  .container{flex-direction:column;padding:10px;align-items:stretch;}
-  .cookie-area{min-width:unset;height:60vh;}
-  .sidebar{width:100%;max-height:36vh;}
-  .stats{top:6px;}
+  .container{flex-direction:column;padding:10px;align-items:stretch}
+  .cookie-area{min-width:unset;height:60vh}
+  .sidebar{width:100%;max-height:36vh}
+  .stats{top:6px}
 }
 </style>
 </head>
@@ -61,8 +64,8 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
   <div class="cookie-area">
     <div class="cookie-wrap">
       <img id="cookie" src="IMG_0771.jpeg" alt="cookie" draggable="false">
-      <audio id="clickSound" src="computer-mouse-click-352734.mp3"></audio>
-      <audio id="music" src="18038_sck.mp3" loop autoplay></audio>
+      <audio id="clickSound" src="computer-mouse-click-352734.mp3" preload="auto"></audio>
+      <audio id="music" src="18038_sck.mp3" loop preload="auto"></audio>
     </div>
     <div class="stats">
       <div class="big" id="cookiesCount">Cookies: 0</div>
@@ -82,7 +85,7 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
   </div>
 </div>
 
-<div id="settingsModal" class="settings-modal">
+<div id="settingsModal" class="settings-modal" aria-hidden="true">
   <div class="settings-content">
     <div style="font-weight:900;font-size:clamp(16px,3vmin,24px);" id="settingsPlayerName">Player: Defult factory</div>
     <div class="achievements" id="achievementsList"></div>
@@ -90,10 +93,18 @@ html,body{height:100%;overflow:hidden;background:#0f0f12 url('IMG_0770.png') cen
   </div>
 </div>
 
+<div id="achView" class="ach-view-modal" role="dialog" aria-modal="true">
+  <h3 id="achViewTitle"></h3>
+  <p id="achViewDesc"></p>
+  <div style="text-align:right;margin-top:12px">
+    <button id="closeAchView" class="ach-btn">Close</button>
+  </div>
+</div>
+
 <div class="notify" id="notifyBox"></div>
 
 <script>
-let cookies=0,cps=0,playerName='Defult factory',buyMode=true,lastClick=Date.now(),clickCount=0,antiClickTimeout=0,cheatDetected=false;
+let cookies=0,cps=0,playerName='Defult factory',buyMode=true,lastClick=Date.now(),clickCount=0,antiClickTimeout=0,cheatDetected=false,secretUsed=false;
 let goldActive=false,goldEnd=0,goldCPSMultiplier=2;
 const cookieEl=document.getElementById('cookie');
 const statsCookies=document.getElementById('cookiesCount');
@@ -111,6 +122,10 @@ const achievementsList=document.getElementById('achievementsList');
 const notifyBox=document.getElementById('notifyBox');
 const clickSound=document.getElementById('clickSound');
 const music=document.getElementById('music');
+const achView=document.getElementById('achView');
+const achViewTitle=document.getElementById('achViewTitle');
+const achViewDesc=document.getElementById('achViewDesc');
+const closeAchView=document.getElementById('closeAchView');
 
 const upgrades=[
 {id:'cursor',name:'Cursor',image:'IMG_0775.png',baseCost:15,baseCPS:0.1,count:0,unlock:0},
@@ -124,7 +139,8 @@ const upgrades=[
 {id:'trollpedia',name:'TrollPedia',image:'TrollPedia.png',baseCost:560000000,baseCPS:260000,count:0,unlock:560000000},
 {id:'basement',name:'TheGuyInYourGrannysBasementV2',image:'TheGuyInYourGrannysBasementV2.png',baseCost:1000000000,baseCPS:1500000,count:0,unlock:1000000000},
 {id:'nuclear',name:'Legalize Nuclear Bombs',image:'legalize nuclear bombs.jpg',baseCost:5000000000,baseCPS:10000000,count:0,unlock:5000000000},
-{id:'sugar',name:'We Got Sugar',image:'we got surgar.jpg',baseCost:10000000000,baseCPS:25000000,count:0,unlock:10000000000}
+{id:'sugar',name:'We Got Sugar',image:'we got surgar.jpg',baseCost:10000000000,baseCPS:25000000,count:0,unlock:10000000000},
+{id:'HoneyDiscount',name:'HoneyDiscount',image:'IMG_0785.png',baseCost:500000000,baseCPS:26,count:0,unlock:50000}
 ];
 
 const achievements = [
@@ -151,79 +167,31 @@ const achievements = [
     {name:'Lazy Genius',desc:'AFK and still making more cookies than everyone else',cond:()=>cookies>=500000,unlocked:false}
 ];
 
+const gameStart=Date.now();
 
-function calcPrice(u){return Math.floor(u.baseCost*Math.pow(1.15,u.count));}
-function computeCPS(){cps=0;upgrades.forEach(u=>{cps+=u.baseCPS*u.count});if(goldActive)cps*=goldCPSMultiplier;}
-function updateCounters(){statsCookies.textContent='Cookies: '+Math.floor(cookies);statsCPS.textContent='CPS: '+cps.toFixed(1);}
-function showNotify(text){notifyBox.textContent=text;notifyBox.style.opacity='1';setTimeout(()=>{notifyBox.style.opacity='0'},2000);}
-function buildUpgradesUI(){
-  upgradeScroll.innerHTML='';
-  upgrades.forEach(u=>{
-    const div=document.createElement('div');div.classList.add('upgrade');if(cookies>=u.unlock)div.classList.add('unlocked');
-    const img=document.createElement('img');img.src=u.image;
-    const info=document.createElement('div');info.classList.add('info');
-    const title=document.createElement('div');title.classList.add('title');title.textContent=u.name;
-    const meta=document.createElement('div');meta.classList.add('meta');
-    const priceEl=document.createElement('div');priceEl.classList.add('price');priceEl.textContent='Price: '+calcPrice(u);
-    const ownedEl=document.createElement('div');ownedEl.classList.add('owned');ownedEl.textContent='Owned: '+u.count;
-    const cpsEl=document.createElement('div');cpsEl.classList.add('cps-total');cpsEl.textContent='Total CPS: '+(u.baseCPS*u.count).toFixed(1);
-    meta.appendChild(priceEl);meta.appendChild(ownedEl);meta.appendChild(cpsEl);
-    info.appendChild(title);info.appendChild(meta);
-    div.appendChild(img);div.appendChild(info);
-    div.addEventListener('click',()=>{
-      if(!buyMode){if(u.count>0){u.count--;updateAllUI();}} else {if(cookies>=calcPrice(u)){cookies-=calcPrice(u);u.count++;updateAllUI();}}
-    });
-    upgradeScroll.appendChild(div);
-  });
-}
-function buildAchievements(){
-  achievementsList.innerHTML='';
-  achievements.forEach(a=>{
-    if(!a.unlocked && a.cond()){a.unlocked=true;showNotify('Achievement unlocked: '+a.name);}
-    const div=document.createElement('div');div.classList.add('achievement');if(!a.unlocked)div.classList.add('locked');
-    div.textContent=a.name;
-    const btn=document.createElement('button');btn.classList.add('ach-btn');btn.textContent='View';btn.addEventListener('click',()=>{if(a.unlocked){alert(a.name+'\n'+a.desc);} else {alert(a.name+' is locked!');}});
-    div.appendChild(btn);
-    achievementsList.appendChild(div);
-  });
-}
-function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150);}
-cookieEl.addEventListener('click',()=>{
-  let now=Date.now();if(now-antiClickTimeout<50)return;antiClickTimeout=now;cookies++;clickCount++;lastClick=now;updateCounters();showClickEffect();clickSound.cloneNode().play();
-});
-modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell');});
-saveBtn.addEventListener('click',()=>{
-  const saveData={c:cookies,u:upgrades.map(u=>u.count),n:playerName,lastClick:lastClick};
-  const blob=new Blob([JSON.stringify(saveData)],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CookieScuffedSave.txt';a.click();
-});
-loadBtn.addEventListener('click',()=>{
-  const input=document.createElement('input');input.type='file';input.accept='.txt';input.onchange=e=>{
-    const file=e.target.files[0];const reader=new FileReader();
-    reader.onload=function(ev){try{const data=JSON.parse(ev.target.result);cookies=data.c;upgrades.forEach((u,i)=>{u.count=data.u[i]});playerName=data.n;lastClick=data.lastClick;playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}catch(err){alert('Invalid save file');}updateAllUI();}
-    reader.readAsText(file);
-  };input.click();
-});
-openSettings.addEventListener('click',()=>{settingsModal.style.display='flex';buildAchievements();});
-closeSettings.addEventListener('click',()=>{settingsModal.style.display='none';});
-playerNameDisplay.addEventListener('click',()=>{
-  const newName=prompt('Enter your name:',playerName.replace(' factory',''));
-  if(newName!==null && newName.trim()!==''){playerName=newName.trim()+' factory';playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;}
-});
-function spawnGoldCookie(){
-  if(goldActive)return;
-  goldActive=true;goldEnd=Date.now()+60000;
-  const gold=document.createElement('img');gold.src='IMG_0778.jpeg';gold.className='gold-cookie';
-  document.body.appendChild(gold);
-  setTimeout(()=>{gold.remove();goldActive=false;updateAllUI();},60000);
-}
-setInterval(()=>{
-  let diff=(Date.now()-lastClick)/1000;
-  let gain=cps/10;if(goldActive)gain*=goldCPSMultiplier;
-  cookies+=gain;updateCounters();buildAchievements();
-},100);
-function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements();}
-updateAllUI();
-music.play().catch(()=>{});
+function calcPrice(u){return Math.floor(u.baseCost*Math.pow(1.15,u.count))}
+function computeCPS(){cps=0;upgrades.forEach(u=>{cps+=u.baseCPS*u.count});if(goldActive)cps*=goldCPSMultiplier}
+function updateCounters(){statsCookies.textContent='Cookies: '+Math.floor(cookies);statsCPS.textContent='CPS: '+Number(cps.toFixed(1))}
+function showNotify(text){notifyBox.textContent=text;notifyBox.style.opacity='1';setTimeout(()=>{notifyBox.style.opacity='0'},2000)}
+function buildUpgradesUI(){upgradeScroll.innerHTML='';upgrades.forEach(u=>{const div=document.createElement('div');div.classList.add('upgrade');if(cookies>=u.unlock)div.classList.add('unlocked');const img=document.createElement('img');img.src=u.image;const info=document.createElement('div');info.classList.add('info');const title=document.createElement('div');title.classList.add('title');title.textContent=u.name;const meta=document.createElement('div');meta.classList.add('meta');const priceEl=document.createElement('div');priceEl.classList.add('price');priceEl.textContent='Price: '+calcPrice(u);const ownedEl=document.createElement('div');ownedEl.classList.add('owned');ownedEl.textContent='Owned: '+u.count;const cpsEl=document.createElement('div');cpsEl.classList.add('cps-total');cpsEl.textContent='Total CPS: '+(u.baseCPS*u.count).toFixed(1);meta.appendChild(priceEl);meta.appendChild(ownedEl);meta.appendChild(cpsEl);info.appendChild(title);info.appendChild(meta);div.appendChild(img);div.appendChild(info);div.addEventListener('click',()=>{if(!buyMode){if(u.count>0){u.count--;cookies+=Math.floor(calcPrice(u)/2);showNotify('Sold '+u.name)}}else{if(cookies>=calcPrice(u)){cookies-=calcPrice(u);u.count++;showNotify('Bought '+u.name);if(playerName===';)' && !secretUsed){cookies+=13000;secretUsed=true;showNotify('Secret: 13000 cookies added');}}}updateAllUI()});upgradeScroll.appendChild(div)})}
+function buildAchievements(){achievementsList.innerHTML='';achievements.forEach(a=>{if(!a.unlocked && a.cond()){a.unlocked=true;showNotify('Achievement unlocked: '+a.name)}const div=document.createElement('div');div.classList.add('achievement');if(!a.unlocked)div.classList.add('locked');const label=document.createElement('div');label.textContent=a.name;label.style.flex='1';label.style.paddingRight='8px';const btn=document.createElement('button');btn.classList.add('ach-btn');btn.textContent='View';btn.setAttribute('data-id',a.id);btn.addEventListener('click',()=>{if(a.unlocked){openAchievementView(a)}else{openAchievementViewLocked(a)}});div.appendChild(label);div.appendChild(btn);achievementsList.appendChild(div)})}
+function openAchievementView(a){achViewTitle.textContent=a.name;achViewDesc.textContent=a.desc;achView.style.display='block';achView.setAttribute('aria-hidden','false')}
+function openAchievementViewLocked(a){achViewTitle.textContent=a.name;achViewDesc.textContent='LOL is locked better unlock it';achView.style.display='block';achView.setAttribute('aria-hidden','false')}
+closeAchView.addEventListener('click',()=>{achView.style.display='none';achView.setAttribute('aria-hidden','true')})
+function showClickEffect(){cookieEl.style.transform=`scale(1.15) rotate(${Math.random()*20-10}deg)`;setTimeout(()=>{cookieEl.style.transform='scale(1) rotate(0)'},150)}
+cookieEl.addEventListener('click',()=>{let now=Date.now();if(now-antiClickTimeout<45)return;antiClickTimeout=now;cookies++;clickCount++;lastClick=now;updateCounters();showClickEffect();const clone=clickSound.cloneNode(true);clone.play().catch(()=>{});})
+modeToggle.addEventListener('click',()=>{buyMode=!buyMode;modeToggle.textContent='Mode: '+(buyMode?'Buy':'Sell')})
+saveBtn.addEventListener('click',()=>{const data={c:Math.floor(cookies),u:upgrades.map(u=>u.count),n:playerName,lastClick:lastClick,secretUsed:secretUsed,unlocked:achievements.map(a=>a.unlocked)};const b64=btoa(JSON.stringify(data));const blob=new Blob([b64],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=Math.floor(Math.random()*1e6)+'_AmongUsRedSus.txt';document.body.appendChild(a);a.click();a.remove()})
+loadBtn.addEventListener('click',()=>{const input=document.createElement('input');input.type='file';input.accept='.txt';input.onchange=e=>{const file=e.target.files[0];const reader=new FileReader();reader.onload=function(ev){try{const txt=ev.target.result;const parsed=JSON.parse(atob(txt));cookies=parsed.c||0;upgrades.forEach((u,i)=>{u.count=parsed.u[i]||0});playerName=parsed.n||'Defult factory';lastClick=parsed.lastClick||Date.now();secretUsed=parsed.secretUsed||false;const unlockedArr=parsed.unlocked||[];achievements.forEach((a,i)=>a.unlocked=!!unlockedArr[i]);playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;updateAllUI()}catch(err){alert('Invalid save file')}};reader.readAsText(file)};input.click()})
+openSettings.addEventListener('click',()=>{settingsModal.style.display='flex';settingsModal.setAttribute('aria-hidden','false');buildAchievements()})
+closeSettings.addEventListener('click',()=>{settingsModal.style.display='none';settingsModal.setAttribute('aria-hidden','true')})
+playerNameDisplay.addEventListener('click',()=>{const nameInput=prompt('Enter name',playerName.replace(/\s*factory$/i,''));if(nameInput!==null){playerName=nameInput.trim()+ ' factory';playerNameDisplay.textContent=playerName;settingsPlayerName.textContent='Player: '+playerName;if(playerName===';) factory' && !secretUsed){cookies+=13000;secretUsed=true;showNotify('Secret unlocked: +13000 cookies')}}})
+function spawnGoldCookie(){if(goldActive)return;goldActive=true;goldEnd=Date.now()+60000;const gold=document.createElement('img');gold.src='IMG_0778.jpeg';gold.className='gold-cookie';document.body.appendChild(gold);setTimeout(()=>{gold.remove();goldActive=false;updateAllUI()},60000)}
+setInterval(()=>{let gain=cps/10;if(goldActive)gain*=goldCPSMultiplier;cookies+=gain;updateCounters();buildAchievements()},100)
+function updateAllUI(){computeCPS();updateCounters();buildUpgradesUI();buildAchievements()}
+updateAllUI()
+document.addEventListener('click',()=>{music.play().catch(()=>{})},{once:true})
+window.addEventListener('error',()=>{})
 </script>
 </body>
 </html>
